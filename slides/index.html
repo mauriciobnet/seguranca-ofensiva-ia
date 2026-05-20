@@ -1,0 +1,3649 @@
+<!DOCTYPE html><html lang="pt-BR"><head>
+
+
+<meta charset="utf-8">
+<title>Ataques Inteligentes na Prática · Act Tecnologia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=JetBrains+Mono:wght@400;500;700&amp;display=swap" rel="stylesheet">
+<script src="deck-stage.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<style>
+  :root {
+    /* Type scale (1920×1080) */
+    --type-mega: 280px;
+    --type-huge: 200px;
+    --type-display: 140px;
+    --type-stat: 120px;
+    --type-stat-sm: 96px;
+    --type-title: 72px;
+    --type-subtitle: 44px;
+    --type-lead: 38px;
+    --type-body: 30px;
+    --type-small: 26px;
+    --type-micro: 22px;
+
+    /* Spacing */
+    --pad-x: 100px;
+    --pad-top: 100px;
+    --pad-bottom: 110px;
+    --gap-title: 56px;
+    --gap-item: 28px;
+    --gap-block: 56px;
+
+    /* Colors — ACT brand */
+    --bg-dark: #0a1929;
+    --bg-darker: #050d18;
+    --bg-card: #102844;
+    --bg-card-2: #163354;
+    --act-blue: #0B92D3;
+    --act-blue-bright: #29B0EC;
+    --act-blue-deep: #084768;
+    --act-gray: #909295;
+    --act-gray-light: #b8babd;
+
+    --ink: #eef2f7;
+    --ink-dim: #a8b3c2;
+    --ink-faint: #6b7a8c;
+
+    --border: rgba(255,255,255,0.07);
+    --border-strong: rgba(255,255,255,0.14);
+    --border-blue: rgba(11,146,211,0.35);
+
+    --sev-critical: #ef4444;
+    --sev-high: #f59e0b;
+    --sev-medium: #facc15;
+    --sev-info: var(--act-blue-bright);
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    padding: 0;
+    background: #000;
+    font-family: 'Inter', system-ui, sans-serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  deck-stage > section {
+    background: var(--bg-dark);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+    position: relative;
+  }
+
+  /* ===== FOOTER (every slide) ===== */
+  .footer {
+    position: absolute;
+    left: var(--pad-x);
+    right: var(--pad-x);
+    bottom: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    z-index: 5;
+    color: var(--ink-faint);
+    font-size: 24px;
+    letter-spacing: 0.02em;
+  }
+  .footer .ftr-right {
+    font-weight: 500;
+    color: var(--ink-dim);
+  }
+  .footer .ftr-right .sep {
+    color: var(--act-blue);
+    margin: 0 12px;
+  }
+
+  /* ACT logo image in footer */
+  .footer-logo {
+    height: 56px;
+    width: auto;
+    display: block;
+    /* Lighten the gray ACT lettering on dark backgrounds */
+    filter: brightness(1.55) contrast(0.95);
+  }
+
+  /* ===== Slide chrome helpers ===== */
+  .slide {
+    width: 100%;
+    height: 100%;
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+  }
+  .eyebrow {
+    font-size: var(--type-small);
+    color: var(--act-blue-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-weight: 600;
+  }
+  .slide-title {
+    font-size: var(--type-title);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin: 0;
+    color: var(--ink);
+  }
+  .slide-title .accent { color: var(--act-blue); }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 18px;
+    border-radius: 999px;
+    background: rgba(11,146,211,0.10);
+    border: 1px solid var(--border-blue);
+    color: var(--act-blue-bright);
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .badge .dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--act-blue-bright);
+    box-shadow: 0 0 12px var(--act-blue-bright);
+  }
+
+  /* Source badge (bottom right of data slides) */
+  .source {
+    position: absolute;
+    left: var(--pad-x);
+    bottom: 90px;
+    font-size: 24px;
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.02em;
+    max-width: 1400px;
+  }
+  .source .lbl {
+    color: var(--act-blue);
+    font-weight: 600;
+    margin-right: 10px;
+    font-size: 24px;
+  }
+
+  /* ===== Background ornaments ===== */
+  .grid-bg {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.025) 1px, transparent 1px);
+    background-size: 80px 80px;
+    pointer-events: none;
+  }
+  .vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 50%, transparent 30%, rgba(0,0,0,0.55) 100%);
+    pointer-events: none;
+  }
+  .blue-glow {
+    position: absolute;
+    width: 900px;
+    height: 900px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(11,146,211,0.22) 0%, transparent 60%);
+    filter: blur(40px);
+    pointer-events: none;
+  }
+
+  /* ===== SLIDE 1 — Cover ===== */
+  .cover {
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(11,146,211,0.18), transparent 50%),
+      radial-gradient(ellipse at 10% 90%, rgba(11,146,211,0.10), transparent 50%),
+      var(--bg-darker);
+  }
+  .cover .net-bg {
+    position: absolute;
+    inset: 0;
+    opacity: 0.45;
+    pointer-events: none;
+  }
+  .cover .content {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    margin-bottom: auto;
+    max-width: 1500px;
+  }
+  .cover .kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    color: var(--act-blue-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 26px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 48px;
+  }
+  .cover .kicker .bar {
+    width: 60px;
+    height: 2px;
+    background: var(--act-blue-bright);
+  }
+  .cover h1 {
+    font-size: 168px;
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.035em;
+    margin: 0 0 32px;
+    background: linear-gradient(180deg, #ffffff 0%, #cfdce9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .cover h2 {
+    font-size: 52px;
+    font-weight: 400;
+    line-height: 1.15;
+    color: var(--ink-dim);
+    margin: 0;
+    max-width: 1300px;
+    letter-spacing: -0.01em;
+  }
+  .cover h2 .hi { color: var(--act-blue-bright); font-weight: 600; }
+  .cover .meta {
+    position: absolute;
+    left: var(--pad-x);
+    bottom: 90px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 3;
+  }
+  .cover .meta .speaker {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .cover .meta .where {
+    font-size: 24px;
+    color: var(--ink-dim);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+  .cover .corner {
+    position: absolute;
+    top: var(--pad-top);
+    right: var(--pad-x);
+    z-index: 3;
+    text-align: right;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-faint);
+    font-size: 24px;
+    letter-spacing: 0.12em;
+    line-height: 1.7;
+  }
+  .cover .corner .num {
+    color: var(--act-blue);
+    font-weight: 700;
+    font-size: 26px;
+  }
+
+  /* ===== Slide 2 — Apresentação ===== */
+  .intro-v2 {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1.05fr 1fr;
+    gap: 72px;
+    align-items: stretch;
+    flex: 1;
+  }
+  .intro-photo {
+    position: relative;
+    border-radius: 22px;
+    overflow: hidden;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    min-height: 660px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.45);
+  }
+  .intro-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .intro-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 60%, rgba(5,13,24,0.6) 100%);
+    pointer-events: none;
+  }
+  .intro-photo .photo-tag {
+    position: absolute;
+    left: 28px;
+    bottom: 24px;
+    z-index: 2;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.06em;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .intro-photo .photo-tag::before {
+    content: '';
+    width: 28px;
+    height: 2px;
+    background: var(--act-blue-bright);
+  }
+  .intro-bio {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 36px;
+  }
+  .intro-name {
+    font-size: 76px;
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    line-height: 1;
+    color: var(--ink);
+    margin: 0;
+  }
+  .intro-name .role {
+    display: block;
+    font-size: 28px;
+    font-weight: 500;
+    color: var(--act-blue-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    margin-top: 18px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .bio-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .bio-list li {
+    font-size: 30px;
+    line-height: 1.35;
+    color: var(--ink);
+    padding-left: 44px;
+    position: relative;
+  }
+  .bio-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18px;
+    width: 24px;
+    height: 2px;
+    background: var(--act-blue);
+  }
+  .bio-list li strong {
+    color: var(--act-blue-bright);
+    font-weight: 600;
+  }
+
+  /* ===== Slide 3 — Quote / Hook ===== */
+  .hook {
+    background:
+      radial-gradient(ellipse at 30% 30%, rgba(11,146,211,0.15), transparent 60%),
+      var(--bg-darker);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .hook .quote-mark {
+    font-family: 'Inter', sans-serif;
+    font-weight: 900;
+    font-size: 380px;
+    line-height: 0.7;
+    color: var(--act-blue);
+    opacity: 0.18;
+    position: absolute;
+    top: 200px;
+    left: 280px;
+  }
+  .hook blockquote {
+    margin: 0;
+    text-align: left;
+    font-size: 132px;
+    font-weight: 800;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    max-width: 1500px;
+    position: relative;
+    z-index: 2;
+    color: var(--ink);
+  }
+  .hook blockquote .line-2 {
+    display: block;
+    color: var(--act-blue-bright);
+    margin-top: 24px;
+  }
+
+  /* ===== Slide · Acordo ético ===== */
+  .pact {
+    background:
+      radial-gradient(ellipse at 12% 0%, rgba(11,146,211,0.10), transparent 55%),
+      radial-gradient(ellipse at 100% 100%, rgba(11,146,211,0.08), transparent 55%),
+      var(--bg-dark);
+  }
+  .pact .pact-header {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 40px;
+  }
+  .pact .pact-stamp {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--act-blue);
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    font-weight: 700;
+    border: 1.5px solid var(--border-blue);
+    background: rgba(11,146,211,0.06);
+    padding: 14px 24px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .pact .pact-stamp .doc-no {
+    color: var(--ink-faint);
+    font-weight: 500;
+  }
+  .pact .pact-preamble {
+    margin-top: 48px;
+    max-width: 1620px;
+    font-size: 38px;
+    line-height: 1.32;
+    color: var(--ink);
+    font-weight: 400;
+    letter-spacing: -0.005em;
+    padding: 22px 0 22px 36px;
+    border-left: 4px solid var(--act-blue);
+  }
+  .pact .pact-preamble strong { color: var(--act-blue-bright); font-weight: 600; }
+  .pact .pact-grid {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 36px;
+  }
+  .pact .pact-col {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 40px 44px 44px;
+    position: relative;
+    overflow: hidden;
+  }
+  .pact .pact-col::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+  }
+  .pact .pact-col.no::before { background: var(--sev-critical); }
+  .pact .pact-col.yes::before { background: var(--act-blue-bright); }
+  .pact .pact-col .h-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .pact .pact-col .sigil {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .pact .pact-col.no .sigil {
+    background: rgba(239,68,68,0.12);
+    border: 1px solid rgba(239,68,68,0.35);
+    color: var(--sev-critical);
+  }
+  .pact .pact-col.yes .sigil {
+    background: rgba(11,146,211,0.12);
+    border: 1px solid var(--border-blue);
+    color: var(--act-blue-bright);
+  }
+  .pact .pact-col .h {
+    font-size: 38px;
+    font-weight: 800;
+    letter-spacing: -0.015em;
+    line-height: 1;
+  }
+  .pact .pact-col.no .h { color: var(--sev-critical); }
+  .pact .pact-col.yes .h { color: var(--act-blue-bright); }
+  .pact .pact-col .sub {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    margin-top: 8px;
+    font-weight: 600;
+  }
+  .pact .pact-col ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .pact .pact-col li {
+    font-size: 26px;
+    line-height: 1.35;
+    color: var(--ink);
+    padding-left: 36px;
+    position: relative;
+  }
+  .pact .pact-col li::before {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 26px;
+    line-height: 1.4;
+  }
+  .pact .pact-col.no li::before {
+    content: '×';
+    color: var(--sev-critical);
+    font-size: 32px;
+    top: -4px;
+  }
+  .pact .pact-col.yes li::before {
+    content: '✓';
+    color: var(--act-blue-bright);
+  }
+  .pact .pact-col li strong { color: var(--ink); font-weight: 600; }
+  .pact .pact-col.yes li strong { color: var(--act-blue-bright); }
+
+  .pact .pact-foot {
+    margin-top: 36px;
+    background: linear-gradient(135deg, rgba(245,158,11,0.10), rgba(245,158,11,0.02));
+    border: 1px solid rgba(245,158,11,0.30);
+    border-left: 4px solid var(--sev-high);
+    border-radius: 14px;
+    padding: 22px 36px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: center;
+    gap: 36px;
+  }
+  .pact .pact-foot .law-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--sev-high);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1.25;
+    white-space: nowrap;
+  }
+  .pact .pact-foot .law-tag .small {
+    display: block;
+    color: var(--ink-faint);
+    font-size: 24px;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    margin-top: 6px;
+    text-transform: none;
+  }
+  .pact .pact-foot .law-txt {
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.32;
+    border-left: 1px solid rgba(255,255,255,0.10);
+    padding-left: 28px;
+  }
+  .pact .pact-foot .law-txt strong { color: var(--sev-high); font-weight: 700; }
+  .pact .pact-foot .signoff {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--act-blue-bright);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+  .pact .pact-foot .signoff .check {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    border: 2px solid var(--act-blue-bright);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--act-blue-bright);
+  }
+
+  /* ===== Section header slides ===== */
+  .section-slide {
+    background:
+      radial-gradient(ellipse at 80% 50%, rgba(11,146,211,0.18), transparent 55%),
+      var(--bg-darker);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  }
+  .section-slide .big-num {
+    position: absolute;
+    right: 80px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 720px;
+    font-weight: 900;
+    line-height: 1;
+    color: var(--act-blue);
+    opacity: 0.10;
+    letter-spacing: -0.05em;
+    font-family: 'Inter', sans-serif;
+    z-index: 1;
+  }
+  .section-slide .section-meta {
+    color: var(--act-blue-bright);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    z-index: 2;
+    position: relative;
+  }
+  .section-slide .section-meta .bar {
+    width: 80px;
+    height: 2px;
+    background: var(--act-blue-bright);
+  }
+  .section-slide h2 {
+    font-size: 140px;
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.035em;
+    margin: 0 0 32px;
+    max-width: 1450px;
+    z-index: 2;
+    position: relative;
+  }
+  .section-slide h2 .accent { color: var(--act-blue-bright); }
+  .section-slide .section-sub {
+    font-size: 38px;
+    color: var(--ink-dim);
+    max-width: 1100px;
+    z-index: 2;
+    position: relative;
+    font-weight: 400;
+    line-height: 1.3;
+  }
+
+  /* ===== Two-column attacker contrast (slides 5,6) ===== */
+  .attacker-slide .slide-title {
+    display: flex;
+    align-items: baseline;
+    gap: 32px;
+  }
+  .attacker-slide .year-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 30px;
+    color: var(--act-blue);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+  }
+  .attacker-list {
+    margin-top: 80px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px 80px;
+    max-width: 1700px;
+  }
+  .attacker-item {
+    display: flex;
+    gap: 28px;
+    align-items: flex-start;
+  }
+  .attacker-item .icon-box {
+    flex-shrink: 0;
+    width: 84px;
+    height: 84px;
+    border-radius: 14px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--act-blue-bright);
+  }
+  .attacker-item .icon-box svg { width: 40px; height: 40px; }
+  .attacker-item .text {
+    font-size: 34px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--ink);
+    padding-top: 16px;
+  }
+
+  /* desaturated tone for 2015 */
+  .past-tone { filter: saturate(0.45); }
+  .past-tone .attacker-item .icon-box {
+    background: rgba(255,255,255,0.04);
+    color: var(--ink-dim);
+  }
+  .past-tone .attacker-item .text { color: var(--ink-dim); }
+
+  /* urgent tone for 2026 */
+  .urgent-tone .attacker-item .icon-box {
+    background: rgba(11,146,211,0.15);
+    border-color: var(--border-blue);
+    color: var(--act-blue-bright);
+    box-shadow: 0 0 30px rgba(11,146,211,0.18);
+  }
+  .urgent-tone::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, transparent, var(--act-blue-bright), transparent);
+  }
+
+  /* ===== Slide 7 — Breakout time ===== */
+  .breakout {
+    display: flex;
+    flex-direction: column;
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  }
+  .breakout .title-row {
+    margin-bottom: 56px;
+  }
+
+  /* Horizontal timeline */
+  .timeline {
+    margin-top: 8px;
+    padding: 32px 24px 24px;
+    position: relative;
+  }
+  .timeline .track {
+    position: absolute;
+    left: 56px;
+    right: 56px;
+    top: calc(50% - 60px);
+    height: 4px;
+    background: linear-gradient(90deg,
+      var(--ink-faint) 0%,
+      var(--ink-faint) 60%,
+      var(--act-blue) 80%,
+      var(--act-blue-bright) 100%);
+    border-radius: 4px;
+  }
+  .timeline-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    position: relative;
+    gap: 0;
+  }
+  .tl-point {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    position: relative;
+  }
+  .tl-point .yr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    margin-bottom: 60px;
+    font-weight: 600;
+  }
+  .tl-point.now .yr {
+    color: var(--act-blue-bright);
+    font-weight: 700;
+  }
+  .tl-point .dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--bg-dark);
+    border: 4px solid var(--ink-faint);
+    position: absolute;
+    top: 64px;
+    z-index: 2;
+  }
+  .tl-point.now .dot {
+    background: var(--act-blue-bright);
+    border-color: var(--act-blue-bright);
+    width: 28px;
+    height: 28px;
+    top: 61px;
+    box-shadow: 0 0 0 10px rgba(11,146,211,0.18), 0 0 30px rgba(11,146,211,0.5);
+  }
+  .tl-point .val {
+    margin-top: 60px;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.025em;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  /* values progressively larger + more saturated */
+  .tl-point:nth-child(1) .val { font-size: 58px; color: var(--ink-faint); }
+  .tl-point:nth-child(2) .val { font-size: 72px; color: var(--ink-dim); }
+  .tl-point:nth-child(3) .val { font-size: 84px; color: var(--act-gray-light); }
+  .tl-point:nth-child(4) .val { font-size: 132px; color: var(--act-blue-bright); }
+  .tl-point .val small {
+    font-size: 0.42em;
+    color: inherit;
+    font-weight: 600;
+    margin-left: 6px;
+    letter-spacing: 0;
+  }
+  .tl-point.now .val small {
+    color: var(--ink-dim);
+    font-weight: 500;
+  }
+
+  .timeline-caption {
+    margin-top: 56px;
+    text-align: center;
+    font-size: 26px;
+    color: var(--ink-dim);
+    letter-spacing: 0.02em;
+  }
+  .timeline-caption strong {
+    color: var(--act-blue-bright);
+    font-weight: 600;
+  }
+  .breakout-hero {
+    margin-top: 20px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 22px;
+    padding: 64px 80px;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 80px;
+    position: relative;
+  }
+  .breakout-hero .label-top {
+    position: absolute;
+    top: -16px;
+    left: 64px;
+    background: var(--bg-dark);
+    padding: 0 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    letter-spacing: 0.22em;
+    color: var(--act-blue);
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+  .breakout-col {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .breakout-col .yr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 28px;
+    color: var(--ink-faint);
+    letter-spacing: 0.12em;
+  }
+  .breakout-col .val {
+    font-size: 140px;
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -0.03em;
+  }
+  .breakout-col.was .val { color: var(--ink-dim); }
+  .breakout-col.now .val { color: var(--act-blue-bright); }
+  .breakout-col .unit {
+    font-size: 28px;
+    color: var(--ink-dim);
+    letter-spacing: 0.04em;
+  }
+  .arrow-big {
+    color: var(--act-blue);
+    font-size: 84px;
+    font-weight: 300;
+    line-height: 1;
+  }
+  .breakout-extra {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .breakout-extra .ex-card {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 28px 36px;
+    border-left: 4px solid var(--act-blue);
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .breakout-extra .ex-num {
+    font-size: 64px;
+    font-weight: 800;
+    color: var(--act-blue-bright);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .breakout-extra .ex-txt {
+    font-size: 24px;
+    color: var(--ink-dim);
+    line-height: 1.35;
+  }
+  .breakout-extra .ex-txt strong { color: var(--ink); font-weight: 600; }
+
+  /* ===== Slide 8 — Democratização (quote + stat) ===== */
+  .democra {
+    display: flex;
+    flex-direction: column;
+  }
+  .democra-quote {
+    margin-top: 48px;
+    font-size: 50px;
+    font-weight: 400;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    max-width: 1500px;
+    padding-left: 40px;
+    border-left: 4px solid var(--act-blue);
+    font-style: italic;
+  }
+  .democra-quote .hilite { color: var(--act-blue-bright); font-style: normal; font-weight: 600; }
+  .democra-stat {
+    margin-top: 70px;
+    display: flex;
+    align-items: center;
+    gap: 56px;
+  }
+  .democra-stat .big {
+    font-size: 200px;
+    font-weight: 900;
+    color: var(--act-blue-bright);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .democra-stat .desc {
+    font-size: 32px;
+    line-height: 1.3;
+    color: var(--ink);
+    max-width: 800px;
+  }
+  .democra-stat .desc strong { color: var(--act-blue-bright); }
+
+  /* ===== Slide 10 — duas estatísticas grandes ===== */
+  .twin-stats {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1px 1fr;
+    gap: 60px;
+    align-items: center;
+  }
+  .twin-stats .divider {
+    width: 1px;
+    height: 320px;
+    background: var(--border-strong);
+  }
+  .stat-block .big {
+    font-size: 280px;
+    font-weight: 900;
+    line-height: 0.85;
+    color: var(--act-blue-bright);
+    letter-spacing: -0.05em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 32px;
+  }
+  .stat-block .desc {
+    font-size: 32px;
+    line-height: 1.3;
+    color: var(--ink);
+    max-width: 620px;
+  }
+  .stat-block .desc strong { color: var(--ink); font-weight: 600; }
+
+  /* ===== Slide 11 — três métricas ===== */
+  .triple-stats {
+    margin-top: 70px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .triple-stats .stat-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 56px 48px;
+    position: relative;
+    overflow: hidden;
+  }
+  .triple-stats .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: var(--act-blue);
+  }
+  .triple-stats .stat-card .num {
+    font-size: 168px;
+    font-weight: 800;
+    line-height: 0.9;
+    color: var(--act-blue-bright);
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+  .triple-stats .stat-card .lbl {
+    font-size: 27px;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .triple-stats .stat-card .lbl strong { color: var(--act-blue-bright); }
+
+  /* ===== Slide 12 — Custo real ===== */
+  .cost-row {
+    margin-top: 36px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 36px 48px;
+    display: grid;
+    grid-template-columns: 1fr 80px 1fr;
+    align-items: center;
+    gap: 32px;
+    position: relative;
+  }
+  .cost-row .cost-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .cost-row .cost-cell.was { text-align: left; }
+  .cost-row .cost-cell.now { text-align: right; }
+  .cost-row .yr {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--ink-faint);
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+  .cost-row.now .yr,
+  .cost-row .cost-cell.now .yr { color: var(--act-blue); }
+  .cost-row .val {
+    font-size: 80px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.025em;
+    color: var(--ink-dim);
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-row .cost-cell.now .val { color: var(--act-blue-bright); }
+  .cost-row .desc {
+    font-size: 22px;
+    color: var(--ink-dim);
+    line-height: 1.3;
+    margin-top: 4px;
+  }
+  .cost-row .cost-cell.now .desc { color: var(--ink); }
+  .cost-row .arr {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--act-blue);
+    font-size: 56px;
+    font-weight: 200;
+    line-height: 1;
+  }
+
+  .cost-eua {
+    margin-top: 24px;
+    background: linear-gradient(135deg, rgba(239,68,68,0.10), rgba(239,68,68,0.02));
+    border: 1px solid rgba(239,68,68,0.30);
+    border-left: 4px solid var(--sev-critical);
+    border-radius: 14px;
+    padding: 22px 36px;
+    display: flex;
+    align-items: center;
+    gap: 28px;
+  }
+  .cost-eua .flag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--sev-critical);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .cost-eua .big {
+    font-size: 56px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-eua .big strong { color: var(--sev-critical); }
+  .cost-eua .lbl {
+    font-size: 22px;
+    color: var(--ink-dim);
+    line-height: 1.3;
+  }
+    margin-top: 32px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 56px 72px;
+    text-align: center;
+    position: relative;
+  }
+  .cost-slide .cost-hero .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    letter-spacing: 0.2em;
+    color: var(--act-blue);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .cost-slide .cost-hero .big {
+    font-size: 180px;
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-slide .cost-hero .big .cur { color: var(--act-blue-bright); font-size: 96px; vertical-align: top; margin-right: 12px; }
+  .cost-slide .cost-hero .sub {
+    font-size: 28px;
+    color: var(--ink-dim);
+    margin-top: 12px;
+  }
+  .cost-slide .cost-hero .rise {
+    margin-top: 18px;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 24px;
+    color: var(--sev-high);
+    font-weight: 600;
+  }
+  .cost-compare {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .cost-card {
+    background: var(--bg-card);
+    border-radius: 16px;
+    padding: 36px 40px;
+    border-left: 4px solid var(--ink-faint);
+  }
+  .cost-card.with { border-left-color: var(--act-blue); }
+  .cost-card .h {
+    font-size: 24px;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    color: var(--ink-dim);
+    margin-bottom: 14px;
+  }
+  .cost-card.with .h { color: var(--act-blue-bright); }
+  .cost-card .v {
+    font-size: 72px;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-card.with .v { color: var(--act-blue-bright); }
+  .cost-card .save {
+    font-size: 24px;
+    margin-top: 12px;
+    color: var(--sev-info);
+    font-weight: 600;
+  }
+
+  /* ===== Slide 13 — Fator humano ===== */
+  .human-stats {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+  }
+  .human-card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    padding: 50px 44px;
+    position: relative;
+  }
+  .human-card .num {
+    font-size: 156px;
+    font-weight: 800;
+    line-height: 0.9;
+    color: var(--act-blue-bright);
+    letter-spacing: -0.04em;
+    margin-bottom: 24px;
+    font-variant-numeric: tabular-nums;
+  }
+  .human-card .lbl {
+    font-size: 26px;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .human-card.warn .num { color: var(--sev-high); }
+  .human-card.danger .num { color: var(--sev-critical); }
+
+  /* ===== Generic attack slides (15–20) ===== */
+  .attack-slide .slide-title {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+  }
+  .attack-slide .step-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    color: var(--act-blue);
+    font-weight: 700;
+  }
+  .flow-row {
+    margin-top: 56px;
+    display: flex;
+    gap: 18px;
+    align-items: stretch;
+  }
+  .flow-step {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 28px 26px;
+    position: relative;
+  }
+  .flow-step .fs-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--act-blue-bright);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    font-weight: 700;
+  }
+  .flow-step .fs-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+    margin-bottom: 10px;
+  }
+  .flow-step .fs-desc {
+    font-size: 24px;
+    color: var(--ink-dim);
+    line-height: 1.35;
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--act-blue);
+    font-size: 40px;
+    font-weight: 300;
+  }
+  .attack-impact {
+    margin-top: 56px;
+    font-size: 42px;
+    font-weight: 500;
+    line-height: 1.25;
+    color: var(--ink);
+    padding-left: 32px;
+    border-left: 4px solid var(--act-blue-bright);
+    max-width: 1500px;
+    font-style: italic;
+  }
+  .attack-impact .h { color: var(--act-blue-bright); font-style: normal; font-weight: 700; }
+  .data-row {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  .data-row.two-col { grid-template-columns: 1fr 1fr; }
+  .data-pill {
+    background: var(--bg-card);
+    border-radius: 14px;
+    padding: 26px 30px;
+    border-left: 4px solid var(--act-blue);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .data-pill .v {
+    font-size: 64px;
+    font-weight: 800;
+    color: var(--act-blue-bright);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .data-pill .l {
+    font-size: 24px;
+    color: var(--ink-dim);
+    line-height: 1.35;
+  }
+  .data-pill.crit { border-left-color: var(--sev-critical); }
+  .data-pill.crit .v { color: var(--sev-critical); }
+  .data-pill.high { border-left-color: var(--sev-high); }
+  .data-pill.high .v { color: var(--sev-high); }
+
+  /* ===== Slide 15 — Recon vertical flow ===== */
+  .recon-flow {
+    margin-top: 32px;
+    display: flex;
+    flex-direction: column;
+    max-width: 1600px;
+  }
+  .recon-step {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-left: 4px solid var(--act-blue);
+    border-radius: 14px;
+    padding: 18px 36px;
+    display: grid;
+    grid-template-columns: 140px 1fr;
+    gap: 32px;
+    align-items: center;
+  }
+  .recon-step .rs-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--act-blue-bright);
+    letter-spacing: 0.18em;
+    font-weight: 700;
+  }
+  .recon-step .rs-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+  .recon-step .rs-desc {
+    font-size: 22px;
+    color: var(--ink-dim);
+    line-height: 1.35;
+    margin-top: 4px;
+  }
+  .recon-arrow {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    padding-left: 70px;
+    color: var(--act-blue);
+    font-size: 24px;
+    font-weight: 300;
+    line-height: 1;
+  }
+  .recon-impact {
+    margin-top: 28px;
+    font-size: 26px;
+    line-height: 1.35;
+    color: var(--ink);
+    padding-left: 28px;
+    border-left: 4px solid var(--act-blue-bright);
+    max-width: 1600px;
+    font-style: italic;
+    font-weight: 500;
+  }
+  .recon-impact .h { color: var(--act-blue-bright); font-style: normal; font-weight: 700; }
+
+  /* ===== Slide 18 — OWASP badge ===== */
+  .owasp-banner {
+    margin-top: 48px;
+    background: linear-gradient(135deg, rgba(239,68,68,0.18), rgba(239,68,68,0.06));
+    border: 1px solid rgba(239,68,68,0.4);
+    border-left: 6px solid var(--sev-critical);
+    border-radius: 16px;
+    padding: 36px 48px;
+    display: flex;
+    align-items: center;
+    gap: 36px;
+  }
+  .owasp-banner .rank {
+    font-size: 108px;
+    font-weight: 900;
+    color: var(--sev-critical);
+    line-height: 0.9;
+    letter-spacing: -0.04em;
+  }
+  .owasp-banner .text {
+    flex: 1;
+  }
+  .owasp-banner .text .top {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--sev-critical);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+  .owasp-banner .text .bottom {
+    font-size: 44px;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.1;
+  }
+
+  /* ===== Slide 19 — Identidades sintéticas ===== */
+  .case-callout {
+    margin-top: 48px;
+    background: var(--bg-card);
+    border-radius: 18px;
+    padding: 44px 56px;
+    border-left: 6px solid var(--sev-critical);
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+  }
+  .case-callout .case-tag {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .case-callout .case-tag .label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--sev-critical);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 700;
+  }
+  .case-callout .case-tag .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 36px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+  }
+  .case-callout .case-tag .origin {
+    font-size: 24px;
+    color: var(--ink-dim);
+  }
+  .case-callout .case-desc {
+    font-size: 28px;
+    line-height: 1.4;
+    color: var(--ink);
+    border-left: 1px solid var(--border-strong);
+    padding-left: 48px;
+  }
+  .case-callout .case-desc strong { color: var(--act-blue-bright); }
+
+  /* ===== Slide 20 — Ransomware comparativo ===== */
+  .compare-table {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: 200px 1fr 60px 1fr;
+    gap: 0;
+    background: var(--bg-card);
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+  .compare-table .row {
+    display: contents;
+  }
+  .compare-table .cell {
+    padding: 28px 36px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    font-size: 24px;
+  }
+  .compare-table .row:last-child .cell { border-bottom: none; }
+  .compare-table .header { font-family: 'JetBrains Mono', monospace; text-transform: uppercase; letter-spacing: 0.14em; font-size: 24px; font-weight: 700; }
+  .compare-table .header.lbl { color: var(--ink-faint); }
+  .compare-table .header.was { color: var(--ink-dim); }
+  .compare-table .header.now { color: var(--act-blue-bright); }
+  .compare-table .cell.lbl {
+    color: var(--ink-faint);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 600;
+  }
+  .compare-table .cell.was { color: var(--ink-dim); font-weight: 500; }
+  .compare-table .cell.now { color: var(--ink); font-weight: 700; }
+  .compare-table .cell.arrow { color: var(--act-blue); font-size: 32px; justify-content: center; font-weight: 300; }
+  .ransom-pay {
+    margin-top: 36px;
+    background: rgba(239,68,68,0.10);
+    border: 1px solid rgba(239,68,68,0.3);
+    border-radius: 14px;
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    gap: 32px;
+  }
+  .ransom-pay .v {
+    font-size: 72px;
+    font-weight: 800;
+    color: var(--sev-critical);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .ransom-pay .l {
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+
+  /* ===== Slide 21 — Demo section ===== */
+  .demo-section {
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(11,146,211,0.15), transparent 60%),
+      var(--bg-darker);
+  }
+  .demo-section .terminal-pattern {
+    position: absolute;
+    inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, rgba(11,146,211,0.05) 0px, rgba(11,146,211,0.05) 1px, transparent 1px, transparent 32px);
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .demo-section .term-prompt {
+    position: absolute;
+    top: var(--pad-top);
+    right: var(--pad-x);
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--act-blue-bright);
+    font-size: 24px;
+    letter-spacing: 0.06em;
+    z-index: 3;
+  }
+  .demo-section .term-prompt .blink {
+    display: inline-block;
+    width: 14px;
+    height: 24px;
+    background: var(--act-blue-bright);
+    vertical-align: middle;
+    margin-left: 6px;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink {
+    0%, 50% { opacity: 1; }
+    50.01%, 100% { opacity: 0; }
+  }
+
+  /* ===== Slide 22 — Pipeline ===== */
+  .pipeline {
+    margin-top: 56px;
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .pipeline .pnode {
+    flex: 1;
+    background: var(--bg-card);
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    padding: 36px 32px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .pipeline .pnode .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--act-blue-bright);
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .pipeline .pnode .name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .pipeline .pnode .desc {
+    font-size: 24px;
+    color: var(--ink-dim);
+    line-height: 1.4;
+  }
+  .pipeline .parrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    color: var(--act-blue);
+    font-size: 42px;
+    font-weight: 300;
+  }
+  .demo-meta {
+    margin-top: 48px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+  .demo-meta .mcard {
+    background: rgba(11,146,211,0.08);
+    border: 1px solid var(--border-blue);
+    border-radius: 14px;
+    padding: 24px 32px;
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.4;
+  }
+  .demo-meta .mcard .ic {
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    background: var(--act-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  .demo-meta .mcard strong { color: var(--act-blue-bright); }
+  .demo-warn {
+    margin-top: 32px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--sev-high);
+    letter-spacing: 0.04em;
+  }
+  .demo-warn::before { content: '!! '; color: var(--sev-high); }
+
+  /* ===== Slide 23 — Recap ===== */
+  .recap-list {
+    margin-top: 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    max-width: 1600px;
+  }
+  .recap-item {
+    display: flex;
+    gap: 28px;
+    align-items: center;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 24px 32px;
+    border-left: 4px solid var(--act-blue);
+  }
+  .recap-item .step {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    background: var(--act-blue);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .recap-item .txt {
+    font-size: 28px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .recap-item .txt strong { color: var(--act-blue-bright); }
+  .recap-finale {
+    margin-top: 56px;
+    padding: 36px 48px;
+    background: linear-gradient(135deg, rgba(11,146,211,0.20), rgba(11,146,211,0.05));
+    border-left: 6px solid var(--act-blue-bright);
+    border-radius: 14px;
+    font-size: 36px;
+    font-style: italic;
+    line-height: 1.3;
+    color: var(--ink);
+    max-width: 1500px;
+  }
+  .recap-finale .strong {
+    display: block;
+    margin-top: 14px;
+    font-style: normal;
+    font-weight: 700;
+    color: var(--act-blue-bright);
+    font-size: 38px;
+  }
+
+  /* ===== Slide 25 — Code review activity ===== */
+  .activity {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+  }
+  .activity-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  .activity-step {
+    display: flex;
+    gap: 22px;
+    align-items: flex-start;
+  }
+  .activity-step .n {
+    flex-shrink: 0;
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+    background: var(--act-blue);
+    color: white;
+    font-weight: 800;
+    font-size: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .activity-step .body {
+    padding-top: 10px;
+    font-size: 26px;
+    line-height: 1.35;
+    color: var(--ink);
+  }
+  .activity-step .body code {
+    background: var(--bg-card);
+    color: var(--act-blue-bright);
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+  }
+  .activity-step .body strong { color: var(--act-blue-bright); }
+  .prompt-block {
+    background: var(--bg-darker);
+    border: 1px solid var(--border-strong);
+    border-radius: 14px;
+    overflow: hidden;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    line-height: 1.55;
+  }
+  .prompt-block .head {
+    background: var(--bg-card);
+    padding: 14px 24px;
+    color: var(--act-blue-bright);
+    font-size: 18px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .prompt-block .head .dots { display: flex; gap: 8px; }
+  .prompt-block .head .dots span { width: 12px; height: 12px; border-radius: 50%; background: var(--ink-faint); opacity: 0.5; }
+  .prompt-block pre {
+    margin: 0;
+    padding: 24px 28px;
+    color: var(--ink);
+    white-space: pre-wrap;
+    overflow: hidden;
+  }
+  .prompt-block .var { color: var(--act-blue-bright); }
+  .repo-row {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    background: var(--bg-card);
+    border-radius: 12px;
+    padding: 18px 24px;
+    border-left: 4px solid var(--act-blue);
+  }
+  .repo-row .lbl {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--act-blue-bright);
+    font-size: 24px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    font-weight: 700;
+  }
+  .repo-row .url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--ink);
+  }
+
+  /* Compact list variant for the activity slide */
+  .repo-row.repo-list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 18px 24px 20px;
+  }
+  .repo-row.repo-list .lbl {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-size: 22px;
+  }
+  .repo-row.repo-list .lbl .org {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-faint);
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    text-transform: none;
+  }
+  .repo-row.repo-list .repo-items {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+  .repo-row.repo-list .repo-items li {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 22px;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+  .repo-row.repo-list .repo-items .lang-tag .pill {
+    min-width: 42px;
+    text-align: center;
+  }
+  .repo-row.repo-list .repo-items .rname {
+    color: var(--ink);
+    font-weight: 600;
+    letter-spacing: 0.01em;
+  }
+
+  /* ===== Slide 26 — Table ===== */
+  .vuln-table {
+    margin-top: 48px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+  }
+  .vuln-row {
+    display: grid;
+    grid-template-columns: 1.2fr 2fr 2fr 1.2fr;
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+  }
+  .vuln-row:last-child { border-bottom: none; }
+  .vuln-row.head {
+    background: rgba(11,146,211,0.08);
+    border-bottom: 1px solid var(--border-blue);
+  }
+  .vuln-row .vc {
+    padding: 22px 32px;
+    font-size: 24px;
+    color: var(--ink);
+    line-height: 1.3;
+  }
+  .vuln-row.head .vc {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--act-blue-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 700;
+  }
+  .lang-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .lang-tag .pill {
+    padding: 4px 12px;
+    border-radius: 6px;
+    font-size: 18px;
+    letter-spacing: 0.04em;
+  }
+  .lang-py .pill { background: rgba(55, 118, 171, 0.25); color: #6ab1ff; }
+  .lang-php .pill { background: rgba(124, 124, 191, 0.25); color: #a0a0ff; }
+  .lang-sh .pill { background: rgba(76, 175, 80, 0.20); color: #7cd87f; }
+  .lang-js .pill { background: rgba(247, 223, 30, 0.20); color: #f7df1e; }
+  .lang-c .pill { background: rgba(170, 110, 70, 0.25); color: #ddb38a; }
+  .cwe {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--sev-critical);
+    font-weight: 700;
+    font-size: 22px;
+  }
+  .vuln-row .vuln-name {
+    font-weight: 600;
+    color: var(--act-blue-bright);
+  }
+  .recap-finale.small {
+    margin-top: 28px;
+    font-size: 26px;
+    padding: 24px 36px;
+  }
+  .recap-finale.small .strong { font-size: 28px; margin-top: 10px; }
+
+  /* ===== Slide 28 — Battlefield ===== */
+  .battlefield {
+    margin-top: 60px;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 28px;
+  }
+  .bf-card {
+    background: var(--bg-card);
+    border-radius: 18px;
+    padding: 48px 42px;
+    border-top: 5px solid var(--act-blue);
+    position: relative;
+  }
+  .bf-card.attack { border-top-color: var(--sev-critical); }
+  .bf-card.defense { border-top-color: var(--act-blue-bright); }
+  .bf-card.you { border-top-color: var(--sev-high); }
+  .bf-card .h {
+    font-size: 32px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 24px;
+    letter-spacing: -0.01em;
+  }
+  .bf-card.attack .h { color: var(--sev-critical); }
+  .bf-card.defense .h { color: var(--act-blue-bright); }
+  .bf-card.you .h { color: var(--sev-high); }
+  .bf-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .bf-card li {
+    font-size: 26px;
+    line-height: 1.3;
+    color: var(--ink);
+    padding-left: 22px;
+    position: relative;
+  }
+  .bf-card li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 14px;
+    width: 10px;
+    height: 2px;
+    background: currentColor;
+    opacity: 0.6;
+  }
+  .bf-final {
+    margin-top: 48px;
+    text-align: center;
+    font-size: 44px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+  }
+  .bf-final .l2 { display: block; color: var(--act-blue-bright); margin-top: 6px; }
+
+  /* ===== Slide 30 — Obrigado / Thanks ===== */
+  .thanks-slide {
+    background:
+      radial-gradient(ellipse at 80% 20%, rgba(11,146,211,0.18), transparent 50%),
+      radial-gradient(ellipse at 10% 90%, rgba(11,146,211,0.10), transparent 50%),
+      var(--bg-darker);
+    display: flex;
+    flex-direction: column;
+    padding: var(--pad-top) var(--pad-x) var(--pad-bottom);
+  }
+  .thanks-slide h2.big-thanks {
+    font-size: 188px;
+    font-weight: 900;
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    margin: 0;
+    background: linear-gradient(180deg, #ffffff 0%, #cfdce9 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .thanks-slide h2.big-thanks .accent-dot {
+    color: var(--act-blue-bright);
+    -webkit-text-fill-color: var(--act-blue-bright);
+  }
+  .thanks-slide::after {
+    content: '';
+    position: absolute;
+    width: 1100px;
+    height: 1100px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(11,146,211,0.16) 0%, transparent 60%);
+    filter: blur(60px);
+    right: -350px;
+    top: -350px;
+    pointer-events: none;
+  }
+  .thanks-slide .thanks-sub {
+    font-size: 36px;
+    color: var(--ink-dim);
+    margin-top: 18px;
+    margin-bottom: 36px;
+    letter-spacing: -0.01em;
+  }
+  .thanks-name {
+    margin-top: 20px;
+    margin-bottom: 12px;
+    font-size: 38px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  .thanks-name::before {
+    content: '';
+    width: 56px;
+    height: 3px;
+    background: var(--act-blue-bright);
+  }
+  .qr-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-top: 32px;
+    position: relative;
+    z-index: 2;
+  }
+  .qr-card {
+    background: linear-gradient(180deg, var(--bg-card) 0%, var(--bg-card-2) 100%);
+    border: 1px solid var(--border-strong);
+    border-radius: 26px;
+    padding: 36px 48px;
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 40px;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.35);
+  }
+  .qr-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--act-blue-bright), transparent);
+  }
+  .qr-card .qr-svg {
+    width: 300px;
+    height: 300px;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.04), 0 12px 36px rgba(11,146,211,0.18);
+  }
+  .qr-card .qr-svg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .qr-info {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .qr-info .qr-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 16px;
+    background: rgba(11,146,211,0.12);
+    border: 1px solid var(--border-blue);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--act-blue-bright);
+  }
+  .qr-info .qr-platform {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 24px;
+    color: var(--act-blue-bright);
+    text-transform: uppercase;
+    letter-spacing: 0.20em;
+    font-weight: 700;
+  }
+  .qr-info .qr-handle {
+    font-size: 34px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+  .qr-info .qr-hint {
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px;
+    color: var(--ink-faint);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .qr-info .qr-hint::before {
+    content: '';
+    width: 28px;
+    height: 2px;
+    background: var(--act-blue);
+  }
+  .refs-grid {
+    margin-top: 36px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 28px;
+  }
+  .refs-clean {
+    margin-top: 56px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    column-gap: 80px;
+    row-gap: 32px;
+    max-width: 1700px;
+  }
+  .refs-clean .ref-item {
+    font-size: 28px;
+    line-height: 1.35;
+    color: var(--ink);
+    padding-left: 30px;
+    position: relative;
+    font-weight: 500;
+  }
+  .refs-clean .ref-item::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 18px;
+    width: 18px;
+    height: 2px;
+    background: var(--act-blue);
+  }
+  .ref {
+    background: var(--bg-card);
+    border-left: 3px solid var(--act-blue);
+    border-radius: 10px;
+    padding: 18px 28px;
+  }
+  .ref .name {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 6px;
+    line-height: 1.25;
+  }
+  .ref .url {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 18px;
+    color: var(--ink-faint);
+    word-break: break-all;
+    line-height: 1.4;
+    letter-spacing: 0.01em;
+  }
+</style>
+</head>
+<body style="">
+
+<deck-stage width="1920" height="1080" style="--deck-rail-w: 188px;" data-om-id="15a8480e:7">
+
+  <!-- ============================================================
+       SLIDE 1 — CAPA
+       ============================================================ -->
+  <section data-label="01 Capa" data-om-id="15a8480e:8" data-screen-label="01 01 Capa" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="0">
+    <div class="slide cover" data-om-id="15a8480e:9">
+      <!-- network background -->
+      <svg class="net-bg" viewBox="0 0 1920 1080" preserveAspectRatio="xMidYMid slice" data-om-id="15a8480e:10">
+        <defs data-om-id="15a8480e:11">
+          <radialGradient id="dotGlow" cx="50%" cy="50%" data-om-id="15a8480e:12">
+            <stop offset="0%" stop-color="#0B92D3" stop-opacity="0.8" data-om-id="15a8480e:13"></stop>
+            <stop offset="100%" stop-color="#0B92D3" stop-opacity="0" data-om-id="15a8480e:14"></stop>
+          </radialGradient>
+        </defs>
+        <g stroke="#0B92D3" stroke-width="1" fill="none" opacity="0.25" data-om-id="15a8480e:15">
+          <line x1="1400" y1="120" x2="1700" y2="260" data-om-id="15a8480e:16"></line>
+          <line x1="1400" y1="120" x2="1600" y2="420" data-om-id="15a8480e:17"></line>
+          <line x1="1700" y1="260" x2="1820" y2="500" data-om-id="15a8480e:18"></line>
+          <line x1="1600" y1="420" x2="1820" y2="500" data-om-id="15a8480e:19"></line>
+          <line x1="1600" y1="420" x2="1500" y2="640" data-om-id="15a8480e:20"></line>
+          <line x1="1500" y1="640" x2="1820" y2="500" data-om-id="15a8480e:21"></line>
+          <line x1="1500" y1="640" x2="1680" y2="820" data-om-id="15a8480e:22"></line>
+          <line x1="1820" y1="500" x2="1680" y2="820" data-om-id="15a8480e:23"></line>
+          <line x1="1680" y1="820" x2="1860" y2="900" data-om-id="15a8480e:24"></line>
+          <line x1="1400" y1="120" x2="1300" y2="320" data-om-id="15a8480e:25"></line>
+          <line x1="1300" y1="320" x2="1500" y2="640" data-om-id="15a8480e:26"></line>
+          <line x1="1300" y1="320" x2="1600" y2="420" data-om-id="15a8480e:27"></line>
+          <line x1="100" y1="900" x2="320" y2="800" data-om-id="15a8480e:28"></line>
+          <line x1="320" y1="800" x2="180" y2="980" data-om-id="15a8480e:29"></line>
+          <line x1="100" y1="900" x2="180" y2="980" data-om-id="15a8480e:30"></line>
+          <line x1="320" y1="800" x2="500" y2="900" data-om-id="15a8480e:31"></line>
+        </g>
+        <g fill="#0B92D3" data-om-id="15a8480e:32">
+          <circle cx="1400" cy="120" r="5" data-om-id="15a8480e:33"></circle>
+          <circle cx="1700" cy="260" r="5" data-om-id="15a8480e:34"></circle>
+          <circle cx="1600" cy="420" r="5" data-om-id="15a8480e:35"></circle>
+          <circle cx="1820" cy="500" r="5" data-om-id="15a8480e:36"></circle>
+          <circle cx="1500" cy="640" r="5" data-om-id="15a8480e:37"></circle>
+          <circle cx="1680" cy="820" r="5" data-om-id="15a8480e:38"></circle>
+          <circle cx="1860" cy="900" r="3" data-om-id="15a8480e:39"></circle>
+          <circle cx="1300" cy="320" r="4" data-om-id="15a8480e:40"></circle>
+          <circle cx="100" cy="900" r="4" data-om-id="15a8480e:41"></circle>
+          <circle cx="320" cy="800" r="5" data-om-id="15a8480e:42"></circle>
+          <circle cx="180" cy="980" r="3" data-om-id="15a8480e:43"></circle>
+          <circle cx="500" cy="900" r="4" data-om-id="15a8480e:44"></circle>
+        </g>
+        <g opacity="0.6" data-om-id="15a8480e:45">
+          <circle cx="1820" cy="500" r="14" fill="url(#dotGlow)" data-om-id="15a8480e:46"></circle>
+          <circle cx="1500" cy="640" r="14" fill="url(#dotGlow)" data-om-id="15a8480e:47"></circle>
+        </g>
+      </svg>
+
+      <div class="corner" data-om-id="15a8480e:48">
+        <div data-om-id="15a8480e:49">PALESTRA</div>
+        <div data-om-id="15a8480e:50">
+</div>
+      </div>
+
+      <div class="content" data-om-id="15a8480e:51">
+        <div class="kicker" data-om-id="15a8480e:52"><span class="bar" data-om-id="15a8480e:53"></span>Cibersegurança · Engenharia de Software</div>
+        <h1 data-om-id="15a8480e:54">Ataques<br data-om-id="15a8480e:55">Inteligentes<br data-om-id="15a8480e:56">na Prática</h1>
+        <h2 data-om-id="15a8480e:57">Como a IA está tornando hackers <span class="hi" data-om-id="15a8480e:58">mais perigosos</span></h2>
+      </div>
+
+      <div class="meta" data-om-id="15a8480e:59">
+        <div class="speaker" data-om-id="15a8480e:60">Maurício Barfknecht</div>
+        <div class="where" data-om-id="15a8480e:61">Act Tecnologia // UTFPR Curitiba · 2026</div>
+      </div>
+
+      <!-- no footer on cover -->
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 2 — APRESENTAÇÃO PESSOAL
+       ============================================================ -->
+  
+
+  <!-- ============================================================
+       SLIDE 3 — GANCHO
+       ============================================================ -->
+  <section data-label="03 Gancho" data-om-id="15a8480e:90" data-screen-label="03 03 Gancho" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="2">
+    <div class="slide hook" data-om-id="15a8480e:91">
+      <span class="quote-mark" data-om-id="15a8480e:92">"</span>
+      <blockquote data-om-id="15a8480e:93">
+        Ensino defesa.
+        <span class="line-2" data-om-id="15a8480e:94">Hoje vou mostrar o ataque.</span>
+      </blockquote>
+
+      <div class="footer" data-om-id="15a8480e:95">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:96">
+        <div class="ftr-right" data-om-id="15a8480e:97">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:98">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 4 — ACORDO ÉTICO
+       ============================================================ -->
+  <section data-label="04 Acordo ético" data-om-id="15a8480e:99" data-screen-label="04 04 Acordo ético" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="3">
+    <div class="slide pact" data-om-id="15a8480e:100">
+      <div class="grid-bg" data-om-id="15a8480e:101"></div>
+
+      <div class="eyebrow" data-om-id="15a8480e:102">// Antes de começar</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:103">Um <span class="accent" data-om-id="15a8480e:104">acordo ético</span> entre nós</h2>
+
+      <div class="pact-preamble" data-om-id="15a8480e:105">
+        Mostrar o ataque tem um único propósito: <strong data-om-id="15a8480e:106">entender o adversário para defender com competência.</strong>
+      </div>
+
+      <div class="pact-grid" data-om-id="15a8480e:107">
+        <div class="pact-col no" data-om-id="15a8480e:108">
+          <div class="h-row" data-om-id="15a8480e:109">
+            <div class="sigil" data-om-id="15a8480e:110">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:111"><circle cx="12" cy="12" r="10" data-om-id="15a8480e:112"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07" data-om-id="15a8480e:113"></line></svg>
+            </div>
+            <div class="h" data-om-id="15a8480e:114">Não vamos fazer</div>
+          </div>
+          <ul data-om-id="15a8480e:115">
+            <li data-om-id="15a8480e:116">Atacar <strong data-om-id="15a8480e:117">sistemas reais</strong> sem autorização por escrito.</li>
+            <li data-om-id="15a8480e:118">Distribuir <strong data-om-id="15a8480e:119">exploits funcionais</strong> ou credenciais vazadas.</li>
+            <li data-om-id="15a8480e:120">Reproduzir o conteúdo <strong data-om-id="15a8480e:121">fora de laboratório isolado</strong>.</li>
+          </ul>
+        </div>
+
+        <div class="pact-col yes" data-om-id="15a8480e:122">
+          <div class="h-row" data-om-id="15a8480e:123">
+            <div class="sigil" data-om-id="15a8480e:124">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:125"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" data-om-id="15a8480e:126"></path></svg>
+            </div>
+            <div class="h" data-om-id="15a8480e:127">Vamos fazer</div>
+          </div>
+          <ul data-om-id="15a8480e:128">
+            <li data-om-id="15a8480e:129">Demonstrar em <strong data-om-id="15a8480e:130">ambiente controlado</strong> (Docker, Metasploitable).</li>
+            <li data-om-id="15a8480e:131">Conectar cada ataque à <strong data-om-id="15a8480e:132">defesa correspondente</strong>.</li>
+            <li data-om-id="15a8480e:133">Tratar o conhecimento como <strong data-om-id="15a8480e:134">ferramenta profissional</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="pact-foot" data-om-id="15a8480e:135">
+        <div class="law-tag" data-om-id="15a8480e:136">
+          Lei nº 12.737/2012
+          <span class="small" data-om-id="15a8480e:137">Lei Carolina Dieckmann · Art. 154-A CP</span>
+        </div>
+        <div class="law-txt" data-om-id="15a8480e:138">
+          Invadir dispositivo informático sem autorização é <strong data-om-id="15a8480e:139">crime no Brasil</strong>. Autorização por escrito, sempre.
+        </div>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:140">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:141">
+        <div class="ftr-right" data-om-id="15a8480e:142">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:143">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 5 — SECTION: O Atacante Mudou
+       ============================================================ -->
+  <section data-label="05 Seção · Evolução" data-om-id="15a8480e:144" data-screen-label="05 05 Seção · Evolução" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="4">
+    <div class="slide section-slide" data-om-id="15a8480e:145">
+      <div class="big-num" data-om-id="15a8480e:146">02</div>
+      <div class="section-meta" data-om-id="15a8480e:147"><span class="bar" data-om-id="15a8480e:148"></span>Capítulo · Evolução Histórica</div>
+      <h2 data-om-id="15a8480e:149">O atacante <span class="accent" data-om-id="15a8480e:150">mudou.</span></h2>
+      <div class="section-sub" style="" data-om-id="15a8480e:151">Como chegamos até aqui: de hackers solo nos anos 2010 ao adversário industrializado por IA.</div>
+
+      <div class="footer" data-om-id="15a8480e:152">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:153">
+        <div class="ftr-right" data-om-id="15a8480e:154">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:155">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 5 — O atacante de 2015
+       ============================================================ -->
+  <section data-label="06 Atacante de 2015" data-om-id="15a8480e:156" data-screen-label="06 06 Atacante de 2015" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="5">
+    <div class="slide attacker-slide past-tone" data-om-id="15a8480e:157">
+      <div class="grid-bg" data-om-id="15a8480e:158"></div>
+      <div class="eyebrow" data-om-id="15a8480e:159">// Ontem</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:160">
+        O atacante de <span class="year-tag" style="font-size:52px;color:var(--ink-dim);" data-om-id="15a8480e:161">2015</span>
+      </h2>
+
+      <div class="attacker-list" data-om-id="15a8480e:162">
+        <div class="attacker-item" data-om-id="15a8480e:163">
+          <div class="icon-box" data-om-id="15a8480e:164">
+            <!-- code icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:165"><polyline points="16 18 22 12 16 6" data-om-id="15a8480e:166"></polyline><polyline points="8 6 2 12 8 18" data-om-id="15a8480e:167"></polyline></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:168">Precisava saber programar</div>
+        </div>
+        <div class="attacker-item" data-om-id="15a8480e:169">
+          <div class="icon-box" data-om-id="15a8480e:170">
+            <!-- search icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:171"><circle cx="11" cy="11" r="8" data-om-id="15a8480e:172"></circle><line x1="21" y1="21" x2="16.65" y2="16.65" data-om-id="15a8480e:173"></line></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:174">Semanas de reconhecimento manual</div>
+        </div>
+        <div class="attacker-item" data-om-id="15a8480e:175">
+          <div class="icon-box" data-om-id="15a8480e:176">
+            <!-- target icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:177"><circle cx="12" cy="12" r="10" data-om-id="15a8480e:178"></circle><circle cx="12" cy="12" r="6" data-om-id="15a8480e:179"></circle><circle cx="12" cy="12" r="2" data-om-id="15a8480e:180"></circle></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:181">Um alvo por vez</div>
+        </div>
+        <div class="attacker-item" data-om-id="15a8480e:182">
+          <div class="icon-box" data-om-id="15a8480e:183">
+            <!-- dollar icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:184"><line x1="12" y1="1" x2="12" y2="23" data-om-id="15a8480e:185"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" data-om-id="15a8480e:186"></path></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:187">Ferramentas caras e restritas</div>
+        </div>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:188">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:189">
+        <div class="ftr-right" data-om-id="15a8480e:190">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:191">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 6 — O atacante de 2026
+       ============================================================ -->
+  <section data-label="07 Atacante de 2026" data-om-id="15a8480e:192" data-screen-label="07 07 Atacante de 2026" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="6">
+    <div class="slide attacker-slide urgent-tone" data-om-id="15a8480e:193">
+      <div class="grid-bg" data-om-id="15a8480e:194"></div>
+      <div class="blue-glow" style="top: -300px; right: -300px;" data-om-id="15a8480e:195"></div>
+      <div class="eyebrow" data-om-id="15a8480e:196">// Hoje</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:197">
+        O atacante de <span class="year-tag" style="font-size:52px;color:var(--act-blue-bright);" data-om-id="15a8480e:198">2026</span>
+      </h2>
+
+      <div class="attacker-list" data-om-id="15a8480e:199">
+        <div class="attacker-item" data-om-id="15a8480e:200">
+          <div class="icon-box" data-om-id="15a8480e:201">
+            <!-- cpu/ai icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:202"><rect x="4" y="4" width="16" height="16" rx="2" data-om-id="15a8480e:203"></rect><rect x="9" y="9" width="6" height="6" data-om-id="15a8480e:204"></rect><line x1="9" y1="1" x2="9" y2="4" data-om-id="15a8480e:205"></line><line x1="15" y1="1" x2="15" y2="4" data-om-id="15a8480e:206"></line><line x1="9" y1="20" x2="9" y2="23" data-om-id="15a8480e:207"></line><line x1="15" y1="20" x2="15" y2="23" data-om-id="15a8480e:208"></line><line x1="20" y1="9" x2="23" y2="9" data-om-id="15a8480e:209"></line><line x1="20" y1="14" x2="23" y2="14" data-om-id="15a8480e:210"></line><line x1="1" y1="9" x2="4" y2="9" data-om-id="15a8480e:211"></line><line x1="1" y1="14" x2="4" y2="14" data-om-id="15a8480e:212"></line></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:213">IA executa sem expertise técnica profunda</div>
+        </div>
+        <div class="attacker-item" data-om-id="15a8480e:214">
+          <div class="icon-box" data-om-id="15a8480e:215">
+            <!-- zap icon -->
+            <svg viewBox="0 0 24 24" fill="currentColor" data-om-id="15a8480e:216"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" data-om-id="15a8480e:217"></polygon></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:218">Reconhecimento automatizado em minutos</div>
+        </div>
+        <div class="attacker-item" data-om-id="15a8480e:219">
+          <div class="icon-box" data-om-id="15a8480e:220">
+            <!-- network icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:221"><circle cx="12" cy="12" r="10" data-om-id="15a8480e:222"></circle><line x1="2" y1="12" x2="22" y2="12" data-om-id="15a8480e:223"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z" data-om-id="15a8480e:224"></path></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:225">Milhares de alvos em paralelo</div>
+        </div>
+        <div class="attacker-item" data-om-id="15a8480e:226">
+          <div class="icon-box" data-om-id="15a8480e:227">
+            <!-- unlocked icon -->
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:228"><rect x="3" y="11" width="18" height="11" rx="2" data-om-id="15a8480e:229"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1" data-om-id="15a8480e:230"></path></svg>
+          </div>
+          <div class="text" data-om-id="15a8480e:231">Ferramentas disponíveis gratuitamente</div>
+        </div>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:232">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:233">
+        <div class="ftr-right" data-om-id="15a8480e:234">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:235">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 7 — Breakout time
+       ============================================================ -->
+  <section data-label="08 Breakout time" data-om-id="15a8480e:236" data-screen-label="08 08 Breakout time" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="7">
+    <div class="slide breakout" data-om-id="15a8480e:237">
+      <div class="grid-bg" data-om-id="15a8480e:238"></div>
+      <div class="title-row" data-om-id="15a8480e:239">
+        <div class="eyebrow" data-om-id="15a8480e:240">// Comparativo</div>
+        <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:241">O que mudou <span class="accent" data-om-id="15a8480e:242">de verdade</span></h2>
+      </div>
+
+      <div class="timeline" data-om-id="15a8480e:243">
+        <div class="track" data-om-id="15a8480e:244"></div>
+        <div class="timeline-row" data-om-id="15a8480e:245">
+          <div class="tl-point" data-om-id="15a8480e:246">
+            <div class="yr" data-om-id="15a8480e:247">2018</div>
+            <div class="dot" data-om-id="15a8480e:248"></div>
+            <div class="val" data-om-id="15a8480e:249">1h <small data-om-id="15a8480e:250">58min</small></div>
+          </div>
+          <div class="tl-point" data-om-id="15a8480e:251">
+            <div class="yr" data-om-id="15a8480e:252">2022</div>
+            <div class="dot" data-om-id="15a8480e:253"></div>
+            <div class="val" data-om-id="15a8480e:254">79 <small data-om-id="15a8480e:255">min</small></div>
+          </div>
+          <div class="tl-point" data-om-id="15a8480e:256">
+            <div class="yr" data-om-id="15a8480e:257">2023</div>
+            <div class="dot" data-om-id="15a8480e:258"></div>
+            <div class="val" data-om-id="15a8480e:259">62 <small data-om-id="15a8480e:260">min</small></div>
+          </div>
+          <div class="tl-point now" data-om-id="15a8480e:261">
+            <div class="yr" data-om-id="15a8480e:262">2026</div>
+            <div class="dot" data-om-id="15a8480e:263"></div>
+            <div class="val" data-om-id="15a8480e:264">29 <small data-om-id="15a8480e:265">min</small></div>
+          </div>
+        </div>
+        <div class="timeline-caption" data-om-id="15a8480e:266">
+          <strong data-om-id="15a8480e:267">BREAKOUT TIME</strong> · tempo médio entre acesso inicial e movimentação lateral
+        </div>
+      </div>
+
+      <div class="breakout-extra" data-om-id="15a8480e:268">
+        <div class="ex-card" data-om-id="15a8480e:269">
+          <div class="ex-num" data-om-id="15a8480e:270">27s</div>
+          <div class="ex-txt" data-om-id="15a8480e:271"><strong data-om-id="15a8480e:272">Recorde absoluto em 2026</strong>, entre acesso inicial e movimento lateral</div>
+        </div>
+        <div class="ex-card" data-om-id="15a8480e:273">
+          <div class="ex-num" data-om-id="15a8480e:274">4 min</div>
+          <div class="ex-txt" data-om-id="15a8480e:275"><strong data-om-id="15a8480e:276">Exfiltração de dados</strong> iniciada após acesso inicial em casos observados</div>
+        </div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:277">
+        <span class="lbl" data-om-id="15a8480e:278">FONTE</span>CrowdStrike 2026 Global Threat Report · CrowdStrike 2024 Global Threat Report</div>
+
+      <div class="footer" data-om-id="15a8480e:279">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:280">
+        <div class="ftr-right" data-om-id="15a8480e:281">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:282">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 8 — Democratização do ataque
+       ============================================================ -->
+  <section data-label="09 Democratização do ataque" data-om-id="15a8480e:283" data-screen-label="09 09 Democratização do ataque" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="8">
+    <div class="slide democra" data-om-id="15a8480e:284">
+      <div class="grid-bg" data-om-id="15a8480e:285"></div>
+      <div class="eyebrow" data-om-id="15a8480e:286">// Acessibilidade</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:287">A democratização <span class="accent" data-om-id="15a8480e:288">do ataque</span></h2>
+
+      <div class="democra-quote" style="" data-om-id="15a8480e:289">
+        O que antes exigia <span class="hilite" data-om-id="15a8480e:290">expertise profunda</span> agora pode ser feito com esforço mínimo. A IA <span class="hilite" data-om-id="15a8480e:291">nivelou o campo</span> entre atacantes qualificados e oportunistas sem experiência técnica.
+      </div>
+
+      <div class="democra-stat" data-om-id="15a8480e:292">
+        <div class="big" data-om-id="15a8480e:293">550%</div>
+        <div class="desc" data-om-id="15a8480e:294"><strong data-om-id="15a8480e:295">mais menções</strong> ao ChatGPT em fóruns criminosos do que a qualquer outro modelo de IA</div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:296">
+        <span class="lbl" data-om-id="15a8480e:297">FONTE</span>Trend Micro Security Predictions 2026 · CrowdStrike 2026 Global Threat Report
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:298">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:299">
+        <div class="ftr-right" data-om-id="15a8480e:300">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:301">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 9 — SECTION: Os Números de 2026
+       ============================================================ -->
+  <section data-label="10 Seção · Panorama 2026" data-om-id="15a8480e:302" data-screen-label="10 10 Seção · Panorama 2026" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="9">
+    <div class="slide section-slide" data-om-id="15a8480e:303">
+      <div class="big-num" data-om-id="15a8480e:304">03</div>
+      <div class="section-meta" data-om-id="15a8480e:305"><span class="bar" data-om-id="15a8480e:306"></span>Capítulo · Panorama Atual</div>
+      <h2 data-om-id="15a8480e:307">Os números <span class="accent" data-om-id="15a8480e:308">de 2026.</span></h2>
+      <div class="section-sub" style="" data-om-id="15a8480e:309">Dados de fontes primárias: CrowdStrike, IBM, WEF, Trend Micro, OWASP.</div>
+
+      <div class="footer" data-om-id="15a8480e:310">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:311">
+        <div class="ftr-right" data-om-id="15a8480e:312">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:313">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 10 — Tamanho do problema
+       ============================================================ -->
+  <section data-label="11 Tamanho do problema" data-om-id="15a8480e:314" data-screen-label="11 11 Tamanho do problema" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="10">
+    <div class="slide" data-om-id="15a8480e:315">
+      <div class="grid-bg" data-om-id="15a8480e:316"></div>
+      <div class="eyebrow" data-om-id="15a8480e:317">// Liderança Global</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:318">O tamanho <span class="accent" data-om-id="15a8480e:319">do problema</span></h2>
+
+      <div class="twin-stats" data-om-id="15a8480e:320">
+        <div class="stat-block" data-om-id="15a8480e:321">
+          <div class="big" data-om-id="15a8480e:322">94%</div>
+          <div class="desc" data-om-id="15a8480e:323">dos <strong data-om-id="15a8480e:324">líderes globais</strong> apontam IA como a <strong data-om-id="15a8480e:325">principal força de transformação</strong> em cibersegurança</div>
+        </div>
+        <div class="divider" data-om-id="15a8480e:326"></div>
+        <div class="stat-block" data-om-id="15a8480e:327">
+          <div class="big" data-om-id="15a8480e:328">87%</div>
+          <div class="desc" data-om-id="15a8480e:329">identificam <strong data-om-id="15a8480e:330">vulnerabilidades de IA</strong> como o risco de <strong data-om-id="15a8480e:331">crescimento mais rápido</strong></div>
+        </div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:332">
+        <span class="lbl" data-om-id="15a8480e:333">FONTE</span>WEF Global Cybersecurity Outlook 2026</div>
+
+      <div class="footer" data-om-id="15a8480e:334">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:335">
+        <div class="ftr-right" data-om-id="15a8480e:336">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:337">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 11 — Impacto nas organizações
+       ============================================================ -->
+  <section data-label="12 Impacto nas organizações" data-om-id="15a8480e:338" data-screen-label="12 12 Impacto nas organizações" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="11">
+    <div class="slide" data-om-id="15a8480e:339">
+      <div class="grid-bg" data-om-id="15a8480e:340"></div>
+      <div class="eyebrow" data-om-id="15a8480e:341">// Telemetria de Ataques</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:342">Impacto <span class="accent" data-om-id="15a8480e:343">nas organizações</span></h2>
+
+      <div class="triple-stats" data-om-id="15a8480e:344">
+        <div class="stat-card" data-om-id="15a8480e:345">
+          <div class="num" data-om-id="15a8480e:346">+89%</div>
+          <div class="lbl" data-om-id="15a8480e:347"><strong data-om-id="15a8480e:348">ataques conduzidos</strong> por grupos que incorporaram IA</div>
+        </div>
+        <div class="stat-card" data-om-id="15a8480e:349">
+          <div class="num" data-om-id="15a8480e:350">+42%</div>
+          <div class="lbl" data-om-id="15a8480e:351"><strong data-om-id="15a8480e:352">vulnerabilidades exploradas</strong> antes da divulgação pública</div>
+        </div>
+        <div class="stat-card" data-om-id="15a8480e:353">
+          <div class="num" data-om-id="15a8480e:354">40%</div>
+          <div class="lbl" data-om-id="15a8480e:355">dos <strong data-om-id="15a8480e:356">incidentes</strong> ocorrem por exploração de vulnerabilidades</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 44px; font-size: 28px; line-height: 1.4; color: var(--ink); max-width: 1600px; padding-left: 32px; border-left: 4px solid var(--act-blue);" data-om-id="15a8480e:357">
+        Grupos criminosos já existentes passaram a operar em <strong style="color:var(--act-blue-bright);" data-om-id="15a8480e:358">escala muito maior</strong> ao integrar IA: mais campanhas, mais alvos, mais velocidade.
+      </div>
+
+      <div class="source" data-om-id="15a8480e:359">
+        <span class="lbl" data-om-id="15a8480e:360">FONTE</span>CrowdStrike 2026 Global Threat Report · IBM X-Force Threat Intelligence Index 2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:361">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:362">
+        <div class="ftr-right" data-om-id="15a8480e:363">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:364">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 12 — Custo real
+       ============================================================ -->
+  <section data-label="13 Custo real" data-om-id="15a8480e:365" data-screen-label="13 13 Custo real" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="12">
+    <div class="slide cost-slide" data-om-id="15a8480e:366">
+      <div class="grid-bg" data-om-id="15a8480e:367"></div>
+      <div class="eyebrow" data-om-id="15a8480e:368">// Impacto Financeiro</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:369">O custo real <span class="accent" data-om-id="15a8480e:370">de um vazamento</span></h2>
+      <div style="margin-top: 16px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--ink-faint); letter-spacing: 0.06em;" data-om-id="15a8480e:371">Média global · 600 organizações em 16 países · IBM 2025</div>
+
+      <div style="margin-top: 40px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 22px; padding: 52px 90px; display: grid; grid-template-columns: 1fr 1px 1fr; gap: 60px; align-items: center;" data-om-id="15a8480e:372">
+        <div style="text-align: center;" data-om-id="15a8480e:373">
+          <div style="font-family:'JetBrains Mono',monospace; font-size: 24px; color: var(--sev-critical); text-transform: uppercase; letter-spacing: 0.20em; font-weight: 700; margin-bottom: 24px;" data-om-id="15a8480e:374">Sem IA na defesa</div>
+          <div style="font-size: 120px; font-weight: 900; line-height: 1; color: var(--sev-critical); letter-spacing: -0.04em; font-variant-numeric: tabular-nums;" data-om-id="15a8480e:375">US$ 5,72 mi</div>
+          <div style="height: 56px;" data-om-id="15a8480e:376"></div>
+        </div>
+        <div style="width: 1px; height: 240px; background: var(--border-strong); justify-self: center;" data-om-id="15a8480e:377"></div>
+        <div style="text-align: center;" data-om-id="15a8480e:378">
+          <div style="font-family:'JetBrains Mono',monospace; font-size: 24px; color: #34d399; text-transform: uppercase; letter-spacing: 0.20em; font-weight: 700; margin-bottom: 24px;" data-om-id="15a8480e:379">Com IA na defesa</div>
+          <div style="font-size: 120px; font-weight: 900; line-height: 1; color: #34d399; letter-spacing: -0.04em; font-variant-numeric: tabular-nums;" data-om-id="15a8480e:380">US$ 3,84 mi</div>
+          <div style="margin-top: 20px; font-size: 24px; color: var(--ink-dim); line-height: 1.35;" data-om-id="15a8480e:381">economia média de <strong style="color: #34d399; font-weight: 700;" data-om-id="15a8480e:382">US$ 1,88 mi</strong> por incidente</div>
+        </div>
+      </div>
+
+      <div style="margin-top: 20px; font-size: 22px; color: var(--ink-faint); max-width: 1600px; line-height: 1.4;" data-om-id="15a8480e:383">
+        Valores representam médias globais. Setores regulados como saúde (US$ 7,42M) e financeiro (US$ 5,56M) registram custos significativamente superiores.
+      </div>
+
+      <div style="margin-top: 22px; font-size: 26px; line-height: 1.3; color: var(--ink); max-width: 1700px; padding-left: 24px; border-left: 4px solid var(--act-blue-bright); font-weight: 500;" data-om-id="15a8480e:384">
+        A IA do atacante <strong style="color: var(--sev-critical); font-weight: 700;" data-om-id="15a8480e:385">eleva o custo</strong>. A IA do defensor <strong style="color: #34d399; font-weight: 700;" data-om-id="15a8480e:386">reduz</strong>. A diferença já é de <strong style="color: var(--act-blue-bright); font-weight: 700;" data-om-id="15a8480e:387">quase US$ 2 milhões</strong> por incidente.
+      </div>
+
+      <div style="margin-top: 18px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--ink-faint); letter-spacing: 0.02em;" data-om-id="15a8480e:388">
+        <span style="color: var(--act-blue); font-weight: 600; margin-right: 10px;" data-om-id="15a8480e:389">FONTE</span>IBM Cost of a Data Breach Report 2025
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:390">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:391">
+        <div class="ftr-right" data-om-id="15a8480e:392">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:393">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 13 — Fator humano
+       ============================================================ -->
+  <section data-label="14 Fator humano" data-om-id="15a8480e:394" data-screen-label="14 14 Fator humano" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="13">
+    <div class="slide" data-om-id="15a8480e:395">
+      <div class="grid-bg" data-om-id="15a8480e:396"></div>
+      <div class="eyebrow" data-om-id="15a8480e:397">// Pessoas</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:398">O fator humano <span class="accent" style="" data-om-id="15a8480e:399">some ou vira arma</span></h2>
+
+      <div class="human-stats" data-om-id="15a8480e:400">
+        <div class="human-card" data-om-id="15a8480e:401">
+          <div class="num" data-om-id="15a8480e:402">73%</div>
+          <div class="lbl" style="" data-om-id="15a8480e:403">dos pesquisados ou alguém próximo foram afetados por <strong style="color:var(--act-blue-bright);" data-om-id="15a8480e:404">fraude cibernética</strong> em 2025</div>
+        </div>
+        <div class="human-card warn" data-om-id="15a8480e:405">
+          <div class="num" data-om-id="15a8480e:406">68%</div>
+          <div class="lbl" data-om-id="15a8480e:407">das organizações sofreram <strong style="color:var(--sev-high);" data-om-id="15a8480e:408">vazamentos ligados ao uso de IA</strong> internamente</div>
+        </div>
+        <div class="human-card danger" data-om-id="15a8480e:409">
+          <div class="num" data-om-id="15a8480e:410">23%</div>
+          <div class="lbl" data-om-id="15a8480e:411">apenas têm <strong style="color:var(--sev-critical);" data-om-id="15a8480e:412">políticas formais de segurança para IA</strong></div>
+        </div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:413">
+        <span class="lbl" data-om-id="15a8480e:414">FONTE</span>WEF Global Cybersecurity Outlook 2026 · Practical DevSecOps 2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:415">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:416">
+        <div class="ftr-right" data-om-id="15a8480e:417">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:418">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 14 — SECTION: Como a IA Está Sendo Usada
+       ============================================================ -->
+  <section data-label="15 Seção · Tipos de ataque" data-om-id="15a8480e:419" data-screen-label="15 15 Seção · Tipos de ataque" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="14">
+    <div class="slide section-slide" data-om-id="15a8480e:420">
+      <div class="big-num" data-om-id="15a8480e:421">04</div>
+      <div class="section-meta" data-om-id="15a8480e:422"><span class="bar" data-om-id="15a8480e:423"></span>Capítulo · Tipos de Ataque</div>
+      <h2 data-om-id="15a8480e:424">Como a IA <span class="accent" data-om-id="15a8480e:425">está atacando.</span></h2>
+      <div class="section-sub" style="" data-om-id="15a8480e:426">Os vetores que estão sendo estruturados agora: reconhecimento, exploração, evasão, prompt injection, identidades sintéticas, ransomware.</div>
+
+      <div class="footer" data-om-id="15a8480e:427">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:428">
+        <div class="ftr-right" data-om-id="15a8480e:429">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:430">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 15 — Reconhecimento automatizado
+       ============================================================ -->
+  <section data-label="16 Reconhecimento automatizado" data-om-id="15a8480e:431" data-screen-label="16 16 Reconhecimento automatizado" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="15">
+    <div class="slide attack-slide" data-om-id="15a8480e:432">
+      <div class="grid-bg" data-om-id="15a8480e:433"></div>
+      <div class="eyebrow" data-om-id="15a8480e:434">// Vetor 01</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:435">
+        <span class="step-num" data-om-id="15a8480e:436">01.</span>Reconhecimento automatizado
+      </h2>
+
+      <div class="recon-flow" data-om-id="15a8480e:437">
+        <div class="recon-step" data-om-id="15a8480e:438">
+          <div class="rs-num" data-om-id="15a8480e:439">ETAPA 1</div>
+          <div data-om-id="15a8480e:440">
+            <div class="rs-title" data-om-id="15a8480e:441">Coleta de dados públicos</div>
+            <div class="rs-desc" data-om-id="15a8480e:442">Shodan, DNS, LinkedIn, certificados, registros WHOIS</div>
+          </div>
+        </div>
+        <div class="recon-arrow" data-om-id="15a8480e:443">↓</div>
+        <div class="recon-step" data-om-id="15a8480e:444">
+          <div class="rs-num" data-om-id="15a8480e:445">ETAPA 2</div>
+          <div data-om-id="15a8480e:446">
+            <div class="rs-title" data-om-id="15a8480e:447">Correlação automatizada</div>
+            <div class="rs-desc" data-om-id="15a8480e:448">Ferramentas identificam serviços, versões e CVEs associadas</div>
+          </div>
+        </div>
+        <div class="recon-arrow" data-om-id="15a8480e:449">↓</div>
+        <div class="recon-step" data-om-id="15a8480e:450">
+          <div class="rs-num" data-om-id="15a8480e:451">ETAPA 3</div>
+          <div data-om-id="15a8480e:452">
+            <div class="rs-title" data-om-id="15a8480e:453">Priorização por exploitabilidade</div>
+            <div class="rs-desc" data-om-id="15a8480e:454">Vulnerabilidades ordenadas por facilidade de exploração e impacto</div>
+          </div>
+        </div>
+        <div class="recon-arrow" data-om-id="15a8480e:455">↓</div>
+        <div class="recon-step" data-om-id="15a8480e:456">
+          <div class="rs-num" data-om-id="15a8480e:457">ETAPA 4</div>
+          <div data-om-id="15a8480e:458">
+            <div class="rs-title" data-om-id="15a8480e:459">Caminho de ataque gerado</div>
+            <div class="rs-desc" data-om-id="15a8480e:460">Sequência de ações definida sem intervenção humana</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="recon-impact" data-om-id="15a8480e:461">
+        Um <span class="h" data-om-id="15a8480e:462">servidor exposto na internet</span> é varrido em <span class="h" data-om-id="15a8480e:463">menos de 1 minuto</span>. Em menos de 15 minutos, as primeiras tentativas de exploração chegam, automatizadas, sem humano do outro lado.
+      </div>
+
+      <div style="margin-top: 22px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--ink-faint); letter-spacing: 0.02em;" data-om-id="15a8480e:464">
+        <span style="color: var(--act-blue); font-weight: 600; margin-right: 10px;" data-om-id="15a8480e:465">FONTE</span>IBM X-Force Threat Intelligence Index 2025/2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:466">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:467">
+        <div class="ftr-right" data-om-id="15a8480e:468">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:469">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 16 — OSINT potencializado por IA
+       ============================================================ -->
+  <section data-label="17 OSINT por IA" data-om-id="15a8480e:470" data-screen-label="17 17 OSINT por IA" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="16">
+    <div class="slide attack-slide" data-om-id="15a8480e:471">
+      <div class="grid-bg" data-om-id="15a8480e:472"></div>
+      <div class="eyebrow" data-om-id="15a8480e:473">// Vetor 01B</div>
+      <h2 class="slide-title" style="margin-top: 20px;" data-om-id="15a8480e:474">
+        <span class="step-num" data-om-id="15a8480e:475">01b.</span>OSINT potencializado por IA
+      </h2>
+      <div style="margin-top: 14px; font-size: 26px; color: var(--ink-dim); max-width: 1500px; line-height: 1.3;" data-om-id="15a8480e:476">Inteligência sobre pessoas e organizações em segundos</div>
+
+      <div class="recon-flow" style="margin-top: 26px;" data-om-id="15a8480e:477">
+        <div class="recon-step" style="padding: 14px 32px;" data-om-id="15a8480e:478">
+          <div class="rs-num" data-om-id="15a8480e:479">ETAPA 1</div>
+          <div data-om-id="15a8480e:480">
+            <div class="rs-title" style="font-size: 26px;" data-om-id="15a8480e:481">Coleta de dados públicos sobre pessoas</div>
+            <div class="rs-desc" style="font-size: 21px;" data-om-id="15a8480e:482">LinkedIn, Instagram, GitHub, registros WHOIS, certificados, fóruns</div>
+          </div>
+        </div>
+        <div class="recon-arrow" style="height: 22px; font-size: 22px;" data-om-id="15a8480e:483">↓</div>
+        <div class="recon-step" style="padding: 14px 32px;" data-om-id="15a8480e:484">
+          <div class="rs-num" data-om-id="15a8480e:485">ETAPA 2</div>
+          <div data-om-id="15a8480e:486">
+            <div class="rs-title" style="font-size: 26px;" data-om-id="15a8480e:487">Cruzamento e correlação por IA</div>
+            <div class="rs-desc" style="font-size: 21px;" data-om-id="15a8480e:488">Perfil completo: cargo, projetos, tecnologias, colegas, rotina e relações de confiança internas</div>
+          </div>
+        </div>
+        <div class="recon-arrow" style="height: 22px; font-size: 22px;" data-om-id="15a8480e:489">↓</div>
+        <div class="recon-step" style="padding: 14px 32px;" data-om-id="15a8480e:490">
+          <div class="rs-num" data-om-id="15a8480e:491">ETAPA 3</div>
+          <div data-om-id="15a8480e:492">
+            <div class="rs-title" style="font-size: 26px;" data-om-id="15a8480e:493">Identificação do alvo ideal</div>
+            <div class="rs-desc" style="font-size: 21px;" data-om-id="15a8480e:494">Funcionário com maior acesso e menor treinamento · GitHub mining: tokens, chaves de API e credenciais hardcoded em repositórios públicos</div>
+          </div>
+        </div>
+        <div class="recon-arrow" style="height: 22px; font-size: 22px;" data-om-id="15a8480e:495">↓</div>
+        <div class="recon-step" style="padding: 14px 32px;" data-om-id="15a8480e:496">
+          <div class="rs-num" data-om-id="15a8480e:497">ETAPA 4</div>
+          <div data-om-id="15a8480e:498">
+            <div class="rs-title" style="font-size: 26px;" data-om-id="15a8480e:499">Credenciais expostas como combustível</div>
+            <div class="rs-desc" style="font-size: 21px;" data-om-id="15a8480e:500"><strong style="color: var(--act-blue-bright); font-weight: 700;" data-om-id="15a8480e:501">5,3 bi</strong> pares de credenciais em circulação · <strong style="color: var(--act-blue-bright); font-weight: 700;" data-om-id="15a8480e:502">80%</strong> em texto plano · <strong style="color: var(--act-blue-bright); font-weight: 700;" data-om-id="15a8480e:503">65%</strong> dos usuários reutilizam a mesma senha</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="margin-top: 22px; background: linear-gradient(135deg, rgba(239,68,68,0.12), rgba(239,68,68,0.03)); border: 1px solid rgba(239,68,68,0.3); border-left: 5px solid var(--sev-critical); border-radius: 14px; padding: 18px 32px; display: flex; align-items: center; gap: 28px; max-width: 1600px;" data-om-id="15a8480e:504">
+        <div style="font-size: 48px; font-weight: 900; color: var(--sev-critical); line-height: 1; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; flex-shrink: 0;" data-om-id="15a8480e:505">8,6 bi</div>
+        <div style="font-size: 24px; color: var(--ink); line-height: 1.3;" data-om-id="15a8480e:506"></div>
+      </div>
+
+      <div class="recon-impact" style="margin-top: 22px; font-size: 24px;" data-om-id="15a8480e:507">
+        O atacante não precisa invadir. Ele <span class="h" data-om-id="15a8480e:508">pesquisa, cruza dados e entra pela porta</span> que você deixou aberta.
+      </div>
+
+      <div style="margin-top: 18px; font-family: 'JetBrains Mono', monospace; font-size: 24px; color: var(--ink-faint); letter-spacing: 0.02em;" data-om-id="15a8480e:509">
+        <span style="color: var(--act-blue); font-weight: 600; margin-right: 10px;" data-om-id="15a8480e:510">FONTE</span>SpyCloud 2026 Identity Exposure Report
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:511">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:512">
+        <div class="ftr-right" data-om-id="15a8480e:513">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:514">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 17 — Exploração de vulnerabilidades com IA
+       ============================================================ -->
+  <section data-label="18 Exploração com IA" data-om-id="15a8480e:515" data-screen-label="18 18 Exploração com IA" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="17">
+    <div class="slide attack-slide" data-om-id="15a8480e:516">
+      <div class="grid-bg" data-om-id="15a8480e:517"></div>
+      <div class="eyebrow" data-om-id="15a8480e:518">// Vetor 02</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:519">
+        <span class="step-num" data-om-id="15a8480e:520">02.</span>Exploração de vulnerabilidades com IA
+      </h2>
+
+      <div class="data-row two-col" data-om-id="15a8480e:521">
+        <div class="data-pill crit" data-om-id="15a8480e:522">
+          <div class="v" data-om-id="15a8480e:523">42%</div>
+          <div class="l" data-om-id="15a8480e:524">das <strong style="color:var(--ink);" data-om-id="15a8480e:525">vulnerabilidades</strong> exploradas antes da divulgação pública</div>
+        </div>
+        <div class="data-pill high" data-om-id="15a8480e:526">
+          <div class="v" data-om-id="15a8480e:527">+44%</div>
+          <div class="l" data-om-id="15a8480e:528">de aumento em <strong style="color:var(--ink);" data-om-id="15a8480e:529">ataques via aplicações públicas</strong> por descoberta de falhas com IA</div>
+        </div>
+      </div>
+
+      <div class="attack-impact" data-om-id="15a8480e:530">
+        A janela entre <span class="h" data-om-id="15a8480e:531">divulgação de uma vulnerabilidade</span> e exploração ativa está se fechando. Com IA, atacantes identificam e exploram falhas <span class="h" data-om-id="15a8480e:532">antes que patches sejam aplicados</span>.
+      </div>
+
+      <div class="source" data-om-id="15a8480e:533">
+        <span class="lbl" data-om-id="15a8480e:534">FONTE</span>CrowdStrike 2026 Global Threat Report · IBM X-Force 2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:535">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:536">
+        <div class="ftr-right" data-om-id="15a8480e:537">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:538">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 18 — Malware polimórfico
+       ============================================================ -->
+  <section data-label="19 Malware polimórfico" data-om-id="15a8480e:539" data-screen-label="19 19 Malware polimórfico" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="18">
+    <div class="slide attack-slide" data-om-id="15a8480e:540">
+      <div class="grid-bg" data-om-id="15a8480e:541"></div>
+      <div class="eyebrow" data-om-id="15a8480e:542">// Vetor 03</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:543">
+        <span class="step-num" data-om-id="15a8480e:544">03.</span>Malware polimórfico e evasão
+      </h2>
+
+      <div class="data-row" data-om-id="15a8480e:545">
+        <div class="data-pill high" data-om-id="15a8480e:546">
+          <div class="v" data-om-id="15a8480e:547">76%</div>
+          <div class="l" data-om-id="15a8480e:548">do <strong style="color:var(--ink);" data-om-id="15a8480e:549">malware detectado</strong> em 2025 exibe polimorfismo orientado por IA</div>
+        </div>
+        <div class="data-pill crit" data-om-id="15a8480e:550">
+          <div class="v" data-om-id="15a8480e:551">82%</div>
+          <div class="l" data-om-id="15a8480e:552">das <strong style="color:var(--ink);" data-om-id="15a8480e:553">detecções CrowdStrike</strong> em 2026 sem malware tradicional</div>
+        </div>
+        <div class="data-pill" data-om-id="15a8480e:554">
+          <div class="v" data-om-id="15a8480e:555">0 AV</div>
+          <div class="l" data-om-id="15a8480e:556">atacantes usam <strong style="color:var(--ink);" data-om-id="15a8480e:557">credenciais legítimas e ferramentas nativas</strong> do sistema. Só detecção por comportamento funciona.</div>
+        </div>
+      </div>
+
+      <div class="flow-row" style="margin-top: 48px;" data-om-id="15a8480e:558">
+        <div class="flow-step" data-om-id="15a8480e:559">
+          <div class="fs-label" data-om-id="15a8480e:560">Etapa 1</div>
+          <div class="fs-title" data-om-id="15a8480e:561">Código malicioso</div>
+          <div class="fs-desc" data-om-id="15a8480e:562">Payload base com função ofensiva</div>
+        </div>
+        <div class="flow-arrow" data-om-id="15a8480e:563">→</div>
+        <div class="flow-step" data-om-id="15a8480e:564">
+          <div class="fs-label" data-om-id="15a8480e:565">Etapa 2</div>
+          <div class="fs-title" data-om-id="15a8480e:566">IA reescreve a cada uso</div>
+          <div class="fs-desc" data-om-id="15a8480e:567">LLM gera variantes funcionalmente equivalentes</div>
+        </div>
+        <div class="flow-arrow" data-om-id="15a8480e:568">→</div>
+        <div class="flow-step" data-om-id="15a8480e:569">
+          <div class="fs-label" data-om-id="15a8480e:570">Etapa 3</div>
+          <div class="fs-title" data-om-id="15a8480e:571">Assinatura nova</div>
+          <div class="fs-desc" data-om-id="15a8480e:572">A cada execução, um hash diferente</div>
+        </div>
+        <div class="flow-arrow" data-om-id="15a8480e:573">→</div>
+        <div class="flow-step" data-om-id="15a8480e:574">
+          <div class="fs-label" data-om-id="15a8480e:575">Resultado</div>
+          <div class="fs-title" data-om-id="15a8480e:576">Antivírus não reconhece</div>
+          <div class="fs-desc" data-om-id="15a8480e:577">Detecção por assinatura é inútil</div>
+        </div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:578">
+        <span class="lbl" data-om-id="15a8480e:579">FONTE</span>CrowdStrike 2026 Global Threat Report
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:580">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:581">
+        <div class="ftr-right" data-om-id="15a8480e:582">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:583">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 19 — Prompt injection
+       ============================================================ -->
+  <section data-label="20 Prompt injection" data-om-id="15a8480e:584" data-screen-label="20 20 Prompt injection" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="19">
+    <div class="slide attack-slide" data-om-id="15a8480e:585">
+      <div class="grid-bg" data-om-id="15a8480e:586"></div>
+      <div class="eyebrow" data-om-id="15a8480e:587">// Vetor 04</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:588">
+        <span class="step-num" data-om-id="15a8480e:589">04.</span>Prompt injection: atacando a própria IA
+      </h2>
+
+      <div class="owasp-banner" data-om-id="15a8480e:590">
+        <div class="rank" data-om-id="15a8480e:591">#1</div>
+        <div class="text" data-om-id="15a8480e:592">
+          <div class="top" data-om-id="15a8480e:593">OWASP Top 10 para LLMs · 2025</div>
+          <div class="bottom" data-om-id="15a8480e:594">Prompt Injection é o vetor de risco número um para aplicações com LLM</div>
+        </div>
+      </div>
+
+      <div class="data-row" style="margin-top: 36px;" data-om-id="15a8480e:595">
+        <div class="data-pill crit" data-om-id="15a8480e:596">
+          <div class="v" data-om-id="15a8480e:597">90+</div>
+          <div class="l" data-om-id="15a8480e:598">organizações com <strong style="color:var(--ink);" data-om-id="15a8480e:599">ferramentas de IA exploradas</strong> para gerar comandos maliciosos</div>
+        </div>
+        <div class="data-pill high" data-om-id="15a8480e:600">
+          <div class="v" data-om-id="15a8480e:601">Autônomo</div>
+          <div class="l" data-om-id="15a8480e:602"><strong style="color:var(--ink);" data-om-id="15a8480e:603">Agentes</strong>: exfiltração + escalada de privilégios + movimento lateral, sem interação humana</div>
+        </div>
+        <div class="data-pill" data-om-id="15a8480e:604">
+          <div class="v" data-om-id="15a8480e:605">80%</div>
+          <div class="l" data-om-id="15a8480e:606">dos <strong style="color:var(--ink);" data-om-id="15a8480e:607">stacks de segurança</strong> atuais não detectam esse vetor</div>
+        </div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:608">
+        <span class="lbl" data-om-id="15a8480e:609">FONTE</span>OWASP Top 10 for LLM Applications 2025 · CrowdStrike 2026 Global Threat Report
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:610">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:611">
+        <div class="ftr-right" data-om-id="15a8480e:612">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:613">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 20 — Identidades sintéticas
+       ============================================================ -->
+  <section data-label="21 Identidades sintéticas" data-om-id="15a8480e:614" data-screen-label="21 21 Identidades sintéticas" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="20">
+    <div class="slide attack-slide" data-om-id="15a8480e:615">
+      <div class="grid-bg" data-om-id="15a8480e:616"></div>
+      <div class="eyebrow" data-om-id="15a8480e:617">// Vetor 05</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:618">
+        <span class="step-num" data-om-id="15a8480e:619">05.</span>Identidades sintéticas: o insider que nunca existiu
+      </h2>
+
+      <div class="flow-row" data-om-id="15a8480e:620">
+        <div class="flow-step" data-om-id="15a8480e:621">
+          <div class="fs-label" data-om-id="15a8480e:622">Fabricação</div>
+          <div class="fs-title" data-om-id="15a8480e:623">IA gera identidade sintética</div>
+          <div class="fs-desc" data-om-id="15a8480e:624">Foto, CV, histórico, presença online</div>
+        </div>
+        <div class="flow-arrow" data-om-id="15a8480e:625">→</div>
+        <div class="flow-step" data-om-id="15a8480e:626">
+          <div class="fs-label" data-om-id="15a8480e:627">Aprovação</div>
+          <div class="fs-title" data-om-id="15a8480e:628">Deepfake de entrevista</div>
+          <div class="fs-desc" data-om-id="15a8480e:629">Vídeo e voz em tempo real, em chamada remota</div>
+        </div>
+        <div class="flow-arrow" data-om-id="15a8480e:630">→</div>
+        <div class="flow-step" data-om-id="15a8480e:631">
+          <div class="fs-label" data-om-id="15a8480e:632">Contratação</div>
+          <div class="fs-title" data-om-id="15a8480e:633">Funcionário oficial</div>
+          <div class="fs-desc" data-om-id="15a8480e:634">Documentos, equipamento, onboarding</div>
+        </div>
+        <div class="flow-arrow" data-om-id="15a8480e:635">→</div>
+        <div class="flow-step" data-om-id="15a8480e:636">
+          <div class="fs-label" data-om-id="15a8480e:637">Resultado</div>
+          <div class="fs-title" data-om-id="15a8480e:638">Acesso legítimo</div>
+          <div class="fs-desc" data-om-id="15a8480e:639">A sistemas internos, código, dados, segredos</div>
+        </div>
+      </div>
+
+      <div class="case-callout" data-om-id="15a8480e:640">
+        <div class="case-tag" data-om-id="15a8480e:641">
+          <div class="label" data-om-id="15a8480e:642">Caso real · APT</div>
+          <div class="name" data-om-id="15a8480e:643">FAMOUS CHOLLIMA</div>
+          <div class="origin" data-om-id="15a8480e:644">Coreia do Norte</div>
+        </div>
+        <div class="case-desc" data-om-id="15a8480e:645">
+          Usou <strong data-om-id="15a8480e:646">GenAI para gerar personas falsas</strong> em esquemas de emprego fraudulentos, infiltrando empresas ocidentais de tecnologia como funcionários remotos legítimos.
+        </div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:647">
+        <span class="lbl" data-om-id="15a8480e:648">FONTE</span>CrowdStrike 2026 Global Threat Report · Trend Micro 2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:649">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:650">
+        <div class="ftr-right" data-om-id="15a8480e:651">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:652">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 21 — Ransomware acelerado
+       ============================================================ -->
+  <section data-label="22 Ransomware acelerado" data-om-id="15a8480e:653" data-screen-label="22 22 Ransomware acelerado" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="21">
+    <div class="slide attack-slide" data-om-id="15a8480e:654">
+      <div class="grid-bg" data-om-id="15a8480e:655"></div>
+      <div class="eyebrow" data-om-id="15a8480e:656">// Vetor 06</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:657">
+        <span class="step-num" data-om-id="15a8480e:658">06.</span>Ransomware acelerado por IA
+      </h2>
+
+      <div class="compare-table" data-om-id="15a8480e:659">
+        <div class="row" data-om-id="15a8480e:660">
+          <div class="cell header lbl" data-om-id="15a8480e:661">Dimensão</div>
+          <div class="cell header was" data-om-id="15a8480e:662">Antes</div>
+          <div class="cell header" style="justify-content:center;color:var(--act-blue);" data-om-id="15a8480e:663">→</div>
+          <div class="cell header now" data-om-id="15a8480e:664">Agora</div>
+        </div>
+        <div class="row" data-om-id="15a8480e:665">
+          <div class="cell lbl" data-om-id="15a8480e:666">Dwell time</div>
+          <div class="cell was" data-om-id="15a8480e:667">9 dias</div>
+          <div class="cell arrow" data-om-id="15a8480e:668">→</div>
+          <div class="cell now" data-om-id="15a8480e:669">5 dias</div>
+        </div>
+        <div class="row" data-om-id="15a8480e:670">
+          <div class="cell lbl" data-om-id="15a8480e:671">Grupos ativos</div>
+          <div class="cell was" data-om-id="15a8480e:672">Base 2024</div>
+          <div class="cell arrow" data-om-id="15a8480e:673">→</div>
+          <div class="cell now" data-om-id="15a8480e:674">+49% em 2025</div>
+        </div>
+        <div class="row" data-om-id="15a8480e:675">
+          <div class="cell lbl" data-om-id="15a8480e:676">Payload</div>
+          <div class="cell was" data-om-id="15a8480e:677">Estático</div>
+          <div class="cell arrow" data-om-id="15a8480e:678">→</div>
+          <div class="cell now" data-om-id="15a8480e:679">41% das famílias com componentes de IA adaptativa</div>
+        </div>
+      </div>
+
+      <div class="ransom-pay" data-om-id="15a8480e:680">
+        <div class="v" data-om-id="15a8480e:681">US$ 1,13 mi</div>
+        <div class="l" data-om-id="15a8480e:682"><strong style="color:var(--sev-critical);" data-om-id="15a8480e:683">pagamento médio de ransomware em 2025</strong>, operação de negócio criminoso consolidada</div>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:684">
+        <span class="lbl" data-om-id="15a8480e:685">FONTE</span>CrowdStrike 2026 · IBM X-Force 2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:686">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:687">
+        <div class="ftr-right" data-om-id="15a8480e:688">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:689">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 22 — SECTION: Demonstração
+       ============================================================ -->
+  <section data-label="23 Seção · Demo" data-om-id="15a8480e:690" data-screen-label="23 23 Seção · Demo" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="22">
+    <div class="slide section-slide demo-section" data-om-id="15a8480e:691">
+      <div class="terminal-pattern" data-om-id="15a8480e:692"></div>
+      <div class="big-num" data-om-id="15a8480e:693">05</div>
+      <div class="term-prompt" data-om-id="15a8480e:694">root@kali:~# ./pwn.sh<span class="blink" data-om-id="15a8480e:695"></span></div>
+      <div class="section-meta" data-om-id="15a8480e:696"><span class="bar" data-om-id="15a8480e:697"></span>Capítulo · Demonstração ao Vivo</div>
+      <h2 data-om-id="15a8480e:698">Agora <span class="accent" data-om-id="15a8480e:699">na prática.</span></h2>
+      <div class="section-sub" data-om-id="15a8480e:700">Pipeline ao vivo: <span style="font-family: 'JetBrains Mono', monospace; color: var(--act-blue-bright);" data-om-id="15a8480e:701">nmap → Claude API → Metasploit → shell root</span></div>
+
+      <div class="footer" data-om-id="15a8480e:702">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:703">
+        <div class="ftr-right" data-om-id="15a8480e:704">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:705">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 23 — Pipeline
+       ============================================================ -->
+  <section data-label="24 Pipeline ao vivo" data-om-id="15a8480e:706" data-screen-label="24 24 Pipeline ao vivo" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="23">
+    <div class="slide" data-om-id="15a8480e:707" data-cc-id="cc-6">
+      <div class="grid-bg" data-om-id="15a8480e:708"></div>
+      <div class="eyebrow" data-om-id="15a8480e:709">// Arquitetura da Demo</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:710">O pipeline <span class="accent" data-om-id="15a8480e:711">ao vivo</span></h2>
+
+      <div class="pipeline" data-om-id="15a8480e:712">
+        <div class="pnode" data-om-id="15a8480e:713">
+          <div class="tag" data-om-id="15a8480e:714">Etapa 01</div>
+          <div class="name" data-om-id="15a8480e:715">nmap</div>
+          <div class="desc" data-om-id="15a8480e:716">Detecta serviços e versões em segundos</div>
+        </div>
+        <div class="parrow" data-om-id="15a8480e:717">→</div>
+        <div class="pnode" data-om-id="15a8480e:718">
+          <div class="tag" data-om-id="15a8480e:719">Etapa 02</div>
+          <div class="name" data-om-id="15a8480e:720">Claude API</div>
+          <div class="desc" data-om-id="15a8480e:721">Analisa output, mapeia CVEs e prioriza vetores</div>
+        </div>
+        <div class="parrow" data-om-id="15a8480e:722">→</div>
+        <div class="pnode" data-om-id="15a8480e:723">
+          <div class="tag" data-om-id="15a8480e:724">Etapa 03</div>
+          <div class="name" data-om-id="15a8480e:725" data-cc-id="cc-4" style="">Python</div>
+          <div class="desc" data-om-id="15a8480e:726" data-cc-id="cc-5">Gera e executa o exploit automaticamente</div>
+        </div>
+        <div class="parrow" data-om-id="15a8480e:727">→</div>
+        <div class="pnode" data-om-id="15a8480e:728">
+          <div class="tag" data-om-id="15a8480e:729">Etapa 04</div>
+          <div class="name" data-om-id="15a8480e:730">Shell</div>
+          <div class="desc" data-om-id="15a8480e:731">Acesso root obtido, ganho de privilégio</div>
+        </div>
+      </div>
+
+      <div class="demo-meta" data-om-id="15a8480e:732">
+        <div class="mcard" data-om-id="15a8480e:733">
+          <div class="ic" data-om-id="15a8480e:734">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:735"><rect x="2" y="3" width="20" height="14" rx="2" data-om-id="15a8480e:736"></rect><line x1="8" y1="21" x2="16" y2="21" data-om-id="15a8480e:737"></line><line x1="12" y1="17" x2="12" y2="21" data-om-id="15a8480e:738"></line></svg>
+          </div>
+          <div data-om-id="15a8480e:739" data-cc-id="cc-3" style="">Target: Linux vulnerável&nbsp;<strong data-om-id="15a8480e:740" data-cc-id="cc-2" style=""></strong>em container Docker local</div>
+        </div>
+        <div class="mcard" data-om-id="15a8480e:741">
+          <div class="ic" data-om-id="15a8480e:742">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:743"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12" data-om-id="15a8480e:744"></polyline></svg>
+          </div>
+          <div data-om-id="15a8480e:745">Tudo automatizado: <strong data-om-id="15a8480e:746">um comando</strong> dispara o pipeline completo</div>
+        </div>
+      </div>
+
+      <div class="demo-warn" data-om-id="15a8480e:747">AMBIENTE DE LABORATÓRIO CONTROLADO E ISOLADO · USO ESTRITAMENTE EDUCACIONAL</div>
+
+      <div class="footer" data-om-id="15a8480e:748">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:749">
+        <div class="ftr-right" data-om-id="15a8480e:750">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:751">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 24 — Recap
+       ============================================================ -->
+  <section data-label="25 Recap da demo" data-om-id="15a8480e:752" data-screen-label="25 25 Recap da demo" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="24">
+    <div class="slide" data-om-id="15a8480e:753">
+      <div class="grid-bg" data-om-id="15a8480e:754"></div>
+      <div class="eyebrow" data-om-id="15a8480e:755">// Recapitulação</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:756">O que acabamos <span class="accent" data-om-id="15a8480e:757">de ver</span></h2>
+
+      <div class="recap-list" style="margin-top: 40px; gap: 16px;" data-om-id="15a8480e:758">
+        <div class="recap-item" style="padding: 20px 28px;" data-om-id="15a8480e:759">
+          <div class="step" data-om-id="15a8480e:760">01</div>
+          <div class="txt" data-om-id="15a8480e:761"><strong data-om-id="15a8480e:762">nmap</strong> identificou serviços e versões em segundos</div>
+        </div>
+        <div class="recap-item" style="padding: 20px 28px;" data-om-id="15a8480e:763">
+          <div class="step" data-om-id="15a8480e:764">02</div>
+          <div class="txt" data-om-id="15a8480e:765"><strong data-om-id="15a8480e:766">Claude</strong> analisou o output e mapeou CVEs com CVSS</div>
+        </div>
+        <div class="recap-item" style="padding: 20px 28px;" data-om-id="15a8480e:767">
+          <div class="step" data-om-id="15a8480e:768">03</div>
+          <div class="txt" data-om-id="15a8480e:769"><strong data-om-id="15a8480e:770" data-cc-id="cc-7" style="">Script Python</strong> executou o exploit automaticamente</div>
+        </div>
+        <div class="recap-item" style="padding: 20px 28px;" data-om-id="15a8480e:771">
+          <div class="step" data-om-id="15a8480e:772">04</div>
+          <div class="txt" data-om-id="15a8480e:773"><strong data-om-id="15a8480e:774">Shell root</strong> obtido em menos de 3 minutos</div>
+        </div>
+      </div>
+
+      <div style="margin: 36px 0 32px; height: 1px; background: linear-gradient(90deg, transparent, var(--border-strong) 20%, var(--border-strong) 80%, transparent);" data-om-id="15a8480e:775"></div>
+
+      <div class="recap-finale" style="margin-top: 0px; font-size: 30px; padding: 28px 40px;" data-om-id="15a8480e:776" data-cc-id="cc-9">
+        Isso antes exigia um <em data-om-id="15a8480e:777" data-cc-id="cc-8" style="">pentester experiente</em> com dedicação.
+        <span class="strong" style="font-size: 32px;" data-om-id="15a8480e:778">Hoje: um comando, uma IA, um laboratório em Docker.</span>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:779">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:780">
+        <div class="ftr-right" data-om-id="15a8480e:781">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:782">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 25 — SECTION: Sua vez
+       ============================================================ -->
+  <section data-label="26 Seção · Atividade prática" data-om-id="15a8480e:783" data-screen-label="26 26 Seção · Atividade prática" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="25">
+    <div class="slide section-slide" data-om-id="15a8480e:784">
+      <div class="big-num" data-om-id="15a8480e:785">06</div>
+      <div class="section-meta" data-om-id="15a8480e:786"><span class="bar" data-om-id="15a8480e:787"></span>Capítulo · Atividade Prática</div>
+      <h2 data-om-id="15a8480e:788">Agora é a <span class="accent" data-om-id="15a8480e:789">sua vez.</span></h2>
+      <div class="section-sub" data-om-id="15a8480e:790">Code Review Ofensivo com Claude. Você vai usar a mesma IA que um atacante usa.</div>
+
+      <div class="footer" data-om-id="15a8480e:791">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:792">
+        <div class="ftr-right" data-om-id="15a8480e:793">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:794">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 26 — Como fazer
+       ============================================================ -->
+  <section data-label="27 Atividade · Como fazer" data-om-id="15a8480e:795" data-screen-label="27 27 Atividade · Como fazer" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="26">
+    <div class="slide" data-om-id="15a8480e:796">
+      <div class="grid-bg" data-om-id="15a8480e:797"></div>
+      <div class="eyebrow" data-om-id="15a8480e:798">// Hands-on</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:799">Code Review Ofensivo <span class="accent" data-om-id="15a8480e:800">: como fazer</span></h2>
+
+      <div class="activity" data-om-id="15a8480e:801">
+        <div class="activity-steps" data-om-id="15a8480e:802">
+          <div class="activity-step" data-om-id="15a8480e:803">
+            <div class="n" data-om-id="15a8480e:804">1</div>
+            <div class="body" data-om-id="15a8480e:805">Acesse <code data-om-id="15a8480e:806">claude.ai</code> com sua conta (a versão gratuita funciona)</div>
+          </div>
+          <div class="activity-step" data-om-id="15a8480e:807">
+            <div class="n" data-om-id="15a8480e:808">2</div>
+            <div class="body" data-om-id="15a8480e:809">Use o <strong data-om-id="15a8480e:810">prompt ao lado</strong> como contexto inicial</div>
+          </div>
+          <div class="activity-step" data-om-id="15a8480e:811">
+            <div class="n" data-om-id="15a8480e:812">3</div>
+            <div class="body" data-om-id="15a8480e:813">Cole <strong data-om-id="15a8480e:814">um dos 5 códigos</strong> do repositório no chat</div>
+          </div>
+          <div class="activity-step" data-om-id="15a8480e:815">
+            <div class="n" data-om-id="15a8480e:816">4</div>
+            <div class="body" data-om-id="15a8480e:817">Analise: <strong data-om-id="15a8480e:818">bug identificado</strong>, CWE, impacto, vetor de exploração</div>
+          </div>
+          <div class="repo-row repo-list" data-om-id="15a8480e:819">
+            <div class="lbl" data-om-id="15a8480e:820">REPOS<span class="org" data-om-id="15a8480e:821">github.com/mauriciobnet/</span></div>
+            <ul class="repo-items" data-om-id="15a8480e:822">
+              <li data-om-id="15a8480e:823"><span class="lang-tag lang-py" data-om-id="15a8480e:824"><span class="pill" data-om-id="15a8480e:825">PY</span></span><span class="rname" data-om-id="15a8480e:826">student-grade-api</span></li>
+              <li data-om-id="15a8480e:827"><span class="lang-tag lang-php" data-om-id="15a8480e:828"><span class="pill" data-om-id="15a8480e:829">PHP</span></span><span class="rname" data-om-id="15a8480e:830">tcc-upload-manager</span></li>
+              <li data-om-id="15a8480e:831"><span class="lang-tag lang-sh" data-om-id="15a8480e:832"><span class="pill" data-om-id="15a8480e:833">SH</span></span><span class="rname" data-om-id="15a8480e:834">server-backup-tool</span></li>
+              <li data-om-id="15a8480e:835"><span class="lang-tag lang-js" data-om-id="15a8480e:836"><span class="pill" data-om-id="15a8480e:837">JS</span></span><span class="rname" data-om-id="15a8480e:838">admin-panel-auth</span></li>
+              <li data-om-id="15a8480e:839"><span class="lang-tag lang-c" data-om-id="15a8480e:840"><span class="pill" data-om-id="15a8480e:841">C</span></span><span class="rname" data-om-id="15a8480e:842">iot-sensor-monitor</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="prompt-block" data-om-id="15a8480e:843">
+          <div class="head" data-om-id="15a8480e:844">
+            <div class="dots" data-om-id="15a8480e:845"><span data-om-id="15a8480e:846"></span><span data-om-id="15a8480e:847"></span><span data-om-id="15a8480e:848"></span></div>
+            <div data-om-id="15a8480e:849">PROMPT.txt</div>
+            <div style="opacity:0.5;" data-om-id="15a8480e:850">claude.ai</div>
+          </div>
+<pre data-om-id="15a8480e:851">Você é um pesquisador de segurança ofensiva
+analisando código em um ambiente acadêmico
+controlado. Analise o código no github abaixo e identifique:
+
+  (1) a vulnerabilidade presente
+  (2) o CWE associado
+  (3) o impacto potencial
+  (4) como um atacante exploraria esse bug
+
+Seja técnico e direto.
+
+[cole o endereço do repositório]</pre>
+        </div>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:852">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:853">
+        <div class="ftr-right" data-om-id="15a8480e:854">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:855">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 27 — O que a IA encontrou
+       ============================================================ -->
+  <section data-label="28 Resultados da atividade" data-om-id="15a8480e:856" data-screen-label="28 28 Resultados da atividade" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="27">
+    <div class="slide" data-om-id="15a8480e:857">
+      <div class="grid-bg" data-om-id="15a8480e:858"></div>
+      <div class="eyebrow" data-om-id="15a8480e:859">// Resultados</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:860">O que a IA encontrou <span class="accent" data-om-id="15a8480e:861">: e o que isso significa</span></h2>
+
+      <div class="vuln-table" data-om-id="15a8480e:862">
+        <div class="vuln-row head" data-om-id="15a8480e:863">
+          <div class="vc" data-om-id="15a8480e:864">Linguagem</div>
+          <div class="vc" data-om-id="15a8480e:865">Contexto</div>
+          <div class="vc" data-om-id="15a8480e:866">Vulnerabilidade</div>
+          <div class="vc" data-om-id="15a8480e:867">CWE</div>
+        </div>
+        <div class="vuln-row" data-om-id="15a8480e:868">
+          <div class="vc" data-om-id="15a8480e:869"><span class="lang-tag lang-py" data-om-id="15a8480e:870"><span class="pill" data-om-id="15a8480e:871">PY</span>Python</span></div>
+          <div class="vc" data-om-id="15a8480e:872">API de notas</div>
+          <div class="vc vuln-name" data-om-id="15a8480e:873">SQL Injection</div>
+          <div class="vc" data-om-id="15a8480e:874"><span class="cwe" data-om-id="15a8480e:875">CWE-89</span></div>
+        </div>
+        <div class="vuln-row" data-om-id="15a8480e:876">
+          <div class="vc" data-om-id="15a8480e:877"><span class="lang-tag lang-php" data-om-id="15a8480e:878"><span class="pill" data-om-id="15a8480e:879">PHP</span>PHP</span></div>
+          <div class="vc" data-om-id="15a8480e:880">Upload de TCC</div>
+          <div class="vc vuln-name" data-om-id="15a8480e:881">Path Traversal</div>
+          <div class="vc" data-om-id="15a8480e:882"><span class="cwe" data-om-id="15a8480e:883">CWE-22</span></div>
+        </div>
+        <div class="vuln-row" data-om-id="15a8480e:884">
+          <div class="vc" data-om-id="15a8480e:885"><span class="lang-tag lang-sh" data-om-id="15a8480e:886"><span class="pill" data-om-id="15a8480e:887">SH</span>Shell</span></div>
+          <div class="vc" data-om-id="15a8480e:888">Script de backup</div>
+          <div class="vc vuln-name" data-om-id="15a8480e:889">Command Injection</div>
+          <div class="vc" data-om-id="15a8480e:890"><span class="cwe" data-om-id="15a8480e:891">CWE-78</span></div>
+        </div>
+        <div class="vuln-row" data-om-id="15a8480e:892">
+          <div class="vc" data-om-id="15a8480e:893"><span class="lang-tag lang-js" data-om-id="15a8480e:894"><span class="pill" data-om-id="15a8480e:895">JS</span>JavaScript</span></div>
+          <div class="vc" data-om-id="15a8480e:896">Login JWT</div>
+          <div class="vc vuln-name" data-om-id="15a8480e:897">Hardcoded credentials</div>
+          <div class="vc" data-om-id="15a8480e:898"><span class="cwe" data-om-id="15a8480e:899">CWE-798</span></div>
+        </div>
+        <div class="vuln-row" data-om-id="15a8480e:900">
+          <div class="vc" data-om-id="15a8480e:901"><span class="lang-tag lang-c" data-om-id="15a8480e:902"><span class="pill" data-om-id="15a8480e:903">C</span>C</span></div>
+          <div class="vc" data-om-id="15a8480e:904">Firmware IoT</div>
+          <div class="vc vuln-name" data-om-id="15a8480e:905">Buffer Overflow</div>
+          <div class="vc" data-om-id="15a8480e:906"><span class="cwe" data-om-id="15a8480e:907">CWE-121</span></div>
+        </div>
+      </div>
+
+      <div class="recap-finale small" data-om-id="15a8480e:908">
+        A IA encontrou em <em data-om-id="15a8480e:909">segundos</em> o bug que você levaria <em data-om-id="15a8480e:910">horas</em> para escrever.
+        <span class="strong" data-om-id="15a8480e:911">O atacante leva menos ainda para explorar.</span>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:912">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:913">
+        <div class="ftr-right" data-om-id="15a8480e:914">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:915">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 28 — SECTION: Fechamento
+       ============================================================ -->
+  <section data-label="29 Seção · Fechamento" data-om-id="15a8480e:916" data-screen-label="29 29 Seção · Fechamento" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="28">
+    <div class="slide section-slide" data-om-id="15a8480e:917">
+      <div class="big-num" data-om-id="15a8480e:918">07</div>
+      <div class="section-meta" data-om-id="15a8480e:919"><span class="bar" data-om-id="15a8480e:920"></span>Capítulo · Fechamento</div>
+      <h2 data-om-id="15a8480e:921">O que muda <span class="accent" data-om-id="15a8480e:922">para você.</span></h2>
+      <div class="section-sub" data-om-id="15a8480e:923">Como desenvolvedor de software, segurança não é mais responsabilidade do "pessoal da segurança". É sua.</div>
+
+      <div class="footer" data-om-id="15a8480e:924">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:925">
+        <div class="ftr-right" data-om-id="15a8480e:926">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:927">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 29 — Campo de batalha
+       ============================================================ -->
+  <section data-label="30 Campo de batalha 2026" data-om-id="15a8480e:928" data-screen-label="30 30 Campo de batalha 2026" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="29">
+    <div class="slide" data-om-id="15a8480e:929">
+      <div class="grid-bg" data-om-id="15a8480e:930"></div>
+      <div class="eyebrow" data-om-id="15a8480e:931">// Síntese</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:932">O campo de batalha <span class="accent" data-om-id="15a8480e:933">em 2026</span></h2>
+
+      <div class="battlefield" data-om-id="15a8480e:934">
+        <div class="bf-card attack" data-om-id="15a8480e:935">
+          <div class="h" data-om-id="15a8480e:936">IA do ataque</div>
+          <ul data-om-id="15a8480e:937">
+            <li data-om-id="15a8480e:938">Mais rápida</li>
+            <li data-om-id="15a8480e:939">Mais barata</li>
+            <li data-om-id="15a8480e:940">Mais acessível</li>
+            <li data-om-id="15a8480e:941">Industrializada</li>
+          </ul>
+        </div>
+        <div class="bf-card defense" data-om-id="15a8480e:942">
+          <div class="h" data-om-id="15a8480e:943">IA da defesa</div>
+          <ul data-om-id="15a8480e:944">
+            <li data-om-id="15a8480e:945">Necessária</li>
+            <li data-om-id="15a8480e:946">Ainda subadotada</li>
+            <li data-om-id="15a8480e:947">37% → 64% das organizações avaliando ferramentas de IA</li>
+          </ul>
+        </div>
+        <div class="bf-card you" data-om-id="15a8480e:948">
+          <div class="h" data-om-id="15a8480e:949">Você, como dev</div>
+          <ul data-om-id="15a8480e:950">
+            <li data-om-id="15a8480e:951">Todo bug que você escreve é um vetor potencial</li>
+            <li data-om-id="15a8480e:952">Toda credencial em código é um convite</li>
+            <li data-om-id="15a8480e:953">Toda dependência é uma superfície de ataque</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="bf-final" data-om-id="15a8480e:954">
+        A corrida está em andamento.
+        <span class="l2" data-om-id="15a8480e:955">Quem sai na frente é quem entende os dois lados.</span>
+      </div>
+
+      <div class="source" data-om-id="15a8480e:956">
+        <span class="lbl" data-om-id="15a8480e:957">FONTE</span>WEF Global Cybersecurity Outlook 2026
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:958">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:959">
+        <div class="ftr-right" data-om-id="15a8480e:960">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:961">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 30 — Referências
+       ============================================================ -->
+  <section data-label="31 Referências" data-om-id="15a8480e:962" data-screen-label="31 31 Referências" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="30">
+    <div class="slide" data-om-id="15a8480e:963">
+      <div class="grid-bg" data-om-id="15a8480e:964"></div>
+      <div class="eyebrow" data-om-id="15a8480e:965">// Bibliografia</div>
+      <h2 class="slide-title" style="margin-top: 24px;" data-om-id="15a8480e:966">Referências</h2>
+
+      <div class="refs-grid" data-om-id="15a8480e:967">
+        <div class="ref" data-om-id="15a8480e:968">
+          <div class="name" data-om-id="15a8480e:969">CrowdStrike 2026 Global Threat Report</div>
+          <div class="url" data-om-id="15a8480e:970">crowdstrike.com/en-us/global-threat-report/</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:971">
+          <div class="name" data-om-id="15a8480e:972">IBM X-Force Threat Intelligence Index 2026</div>
+          <div class="url" data-om-id="15a8480e:973">newsroom.ibm.com/2026-02-25-ibm-2026-x-force-threat-index-ai-driven-attacks-are-escalating-as-basic-security-gaps-leave-enterprises-exposed</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:974">
+          <div class="name" data-om-id="15a8480e:975">IBM Cost of a Data Breach Report 2025</div>
+          <div class="url" data-om-id="15a8480e:976">ibm.com/reports/data-breach</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:977">
+          <div class="name" data-om-id="15a8480e:978">WEF Global Cybersecurity Outlook 2026</div>
+          <div class="url" data-om-id="15a8480e:979">weforum.org/publications/global-cybersecurity-outlook-2026/</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:980">
+          <div class="name" data-om-id="15a8480e:981">Trend Micro Security Predictions 2026: The AI-fication of Cyberthreats</div>
+          <div class="url" data-om-id="15a8480e:982">trendmicro.com/vinfo/us/security/research-and-analysis/predictions/the-ai-fication-of-cyberthreats-trend-micro-security-predictions-for-2026</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:983">
+          <div class="name" data-om-id="15a8480e:984">OWASP Top 10 for LLM Applications 2025</div>
+          <div class="url" data-om-id="15a8480e:985">owasp.org/www-project-top-10-for-large-language-model-applications/</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:986">
+          <div class="name" data-om-id="15a8480e:987">Practical DevSecOps AI Security Statistics 2026</div>
+          <div class="url" data-om-id="15a8480e:988">practical-devsecops.com/ai-security-statistics-2026-research-report/</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:989">
+          <div class="name" data-om-id="15a8480e:990">SpyCloud 2026 Identity Exposure Report</div>
+          <div class="url" data-om-id="15a8480e:991">spycloud.com/resource/report/spycloud-annual-identity-exposure-report-2026/</div>
+        </div>
+        <div class="ref" data-om-id="15a8480e:992">
+          <div class="name" data-om-id="15a8480e:993">ReliaQuest 2026 Annual Threat Report</div>
+          <div class="url" data-om-id="15a8480e:994">reliaquest.com/blog/2026-annual-cyber-threat-report/</div>
+        </div>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:995">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:996">
+        <div class="ftr-right" data-om-id="15a8480e:997">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:998">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       SLIDE 31 — Obrigado / Contato
+       ============================================================ -->
+  <section data-label="32 Obrigado" data-om-id="15a8480e:999" data-screen-label="32 32 Obrigado" data-om-validate="no_overflowing_text,no_overlapping_text,slide_sized_text" data-deck-slide="31" data-deck-last-visible="">
+    <div class="slide thanks-slide" data-om-id="15a8480e:1000">
+      <div class="eyebrow" data-om-id="15a8480e:1001">// Encerramento</div>
+      <h2 class="big-thanks" data-om-id="15a8480e:1002">Obrigado<span class="accent-dot" data-om-id="15a8480e:1003">.</span></h2>
+      <div class="thanks-sub" data-om-id="15a8480e:1004">Vamos manter contato.</div>
+
+      <div class="thanks-name" data-om-id="15a8480e:1005">Maurício Barfknecht</div>
+
+      <div class="qr-row" data-om-id="15a8480e:1006">
+        <div class="qr-card" data-om-id="15a8480e:1007">
+          <div class="qr-svg" data-qr="https://www.linkedin.com/in/mauriciobarfknecht/" data-om-id="15a8480e:1008"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 264" preserveAspectRatio="xMinYMin meet"><rect width="100%" height="100%" fill="white" cx="0" cy="0"></rect><path d="M0,0l8,0 0,8 -8,0 0,-8z M8,0l8,0 0,8 -8,0 0,-8z M16,0l8,0 0,8 -8,0 0,-8z M24,0l8,0 0,8 -8,0 0,-8z M32,0l8,0 0,8 -8,0 0,-8z M40,0l8,0 0,8 -8,0 0,-8z M48,0l8,0 0,8 -8,0 0,-8z M64,0l8,0 0,8 -8,0 0,-8z M72,0l8,0 0,8 -8,0 0,-8z M88,0l8,0 0,8 -8,0 0,-8z M104,0l8,0 0,8 -8,0 0,-8z M112,0l8,0 0,8 -8,0 0,-8z M120,0l8,0 0,8 -8,0 0,-8z M128,0l8,0 0,8 -8,0 0,-8z M144,0l8,0 0,8 -8,0 0,-8z M168,0l8,0 0,8 -8,0 0,-8z M184,0l8,0 0,8 -8,0 0,-8z M208,0l8,0 0,8 -8,0 0,-8z M216,0l8,0 0,8 -8,0 0,-8z M224,0l8,0 0,8 -8,0 0,-8z M232,0l8,0 0,8 -8,0 0,-8z M240,0l8,0 0,8 -8,0 0,-8z M248,0l8,0 0,8 -8,0 0,-8z M256,0l8,0 0,8 -8,0 0,-8z M0,8l8,0 0,8 -8,0 0,-8z M48,8l8,0 0,8 -8,0 0,-8z M80,8l8,0 0,8 -8,0 0,-8z M88,8l8,0 0,8 -8,0 0,-8z M104,8l8,0 0,8 -8,0 0,-8z M112,8l8,0 0,8 -8,0 0,-8z M128,8l8,0 0,8 -8,0 0,-8z M144,8l8,0 0,8 -8,0 0,-8z M152,8l8,0 0,8 -8,0 0,-8z M160,8l8,0 0,8 -8,0 0,-8z M192,8l8,0 0,8 -8,0 0,-8z M208,8l8,0 0,8 -8,0 0,-8z M256,8l8,0 0,8 -8,0 0,-8z M0,16l8,0 0,8 -8,0 0,-8z M16,16l8,0 0,8 -8,0 0,-8z M24,16l8,0 0,8 -8,0 0,-8z M32,16l8,0 0,8 -8,0 0,-8z M48,16l8,0 0,8 -8,0 0,-8z M72,16l8,0 0,8 -8,0 0,-8z M80,16l8,0 0,8 -8,0 0,-8z M88,16l8,0 0,8 -8,0 0,-8z M96,16l8,0 0,8 -8,0 0,-8z M112,16l8,0 0,8 -8,0 0,-8z M120,16l8,0 0,8 -8,0 0,-8z M136,16l8,0 0,8 -8,0 0,-8z M144,16l8,0 0,8 -8,0 0,-8z M152,16l8,0 0,8 -8,0 0,-8z M160,16l8,0 0,8 -8,0 0,-8z M168,16l8,0 0,8 -8,0 0,-8z M176,16l8,0 0,8 -8,0 0,-8z M184,16l8,0 0,8 -8,0 0,-8z M192,16l8,0 0,8 -8,0 0,-8z M208,16l8,0 0,8 -8,0 0,-8z M224,16l8,0 0,8 -8,0 0,-8z M232,16l8,0 0,8 -8,0 0,-8z M240,16l8,0 0,8 -8,0 0,-8z M256,16l8,0 0,8 -8,0 0,-8z M0,24l8,0 0,8 -8,0 0,-8z M16,24l8,0 0,8 -8,0 0,-8z M24,24l8,0 0,8 -8,0 0,-8z M32,24l8,0 0,8 -8,0 0,-8z M48,24l8,0 0,8 -8,0 0,-8z M64,24l8,0 0,8 -8,0 0,-8z M80,24l8,0 0,8 -8,0 0,-8z M96,24l8,0 0,8 -8,0 0,-8z M128,24l8,0 0,8 -8,0 0,-8z M136,24l8,0 0,8 -8,0 0,-8z M152,24l8,0 0,8 -8,0 0,-8z M208,24l8,0 0,8 -8,0 0,-8z M224,24l8,0 0,8 -8,0 0,-8z M232,24l8,0 0,8 -8,0 0,-8z M240,24l8,0 0,8 -8,0 0,-8z M256,24l8,0 0,8 -8,0 0,-8z M0,32l8,0 0,8 -8,0 0,-8z M16,32l8,0 0,8 -8,0 0,-8z M24,32l8,0 0,8 -8,0 0,-8z M32,32l8,0 0,8 -8,0 0,-8z M48,32l8,0 0,8 -8,0 0,-8z M64,32l8,0 0,8 -8,0 0,-8z M88,32l8,0 0,8 -8,0 0,-8z M104,32l8,0 0,8 -8,0 0,-8z M128,32l8,0 0,8 -8,0 0,-8z M152,32l8,0 0,8 -8,0 0,-8z M168,32l8,0 0,8 -8,0 0,-8z M176,32l8,0 0,8 -8,0 0,-8z M184,32l8,0 0,8 -8,0 0,-8z M208,32l8,0 0,8 -8,0 0,-8z M224,32l8,0 0,8 -8,0 0,-8z M232,32l8,0 0,8 -8,0 0,-8z M240,32l8,0 0,8 -8,0 0,-8z M256,32l8,0 0,8 -8,0 0,-8z M0,40l8,0 0,8 -8,0 0,-8z M48,40l8,0 0,8 -8,0 0,-8z M64,40l8,0 0,8 -8,0 0,-8z M72,40l8,0 0,8 -8,0 0,-8z M104,40l8,0 0,8 -8,0 0,-8z M112,40l8,0 0,8 -8,0 0,-8z M120,40l8,0 0,8 -8,0 0,-8z M136,40l8,0 0,8 -8,0 0,-8z M144,40l8,0 0,8 -8,0 0,-8z M160,40l8,0 0,8 -8,0 0,-8z M208,40l8,0 0,8 -8,0 0,-8z M256,40l8,0 0,8 -8,0 0,-8z M0,48l8,0 0,8 -8,0 0,-8z M8,48l8,0 0,8 -8,0 0,-8z M16,48l8,0 0,8 -8,0 0,-8z M24,48l8,0 0,8 -8,0 0,-8z M32,48l8,0 0,8 -8,0 0,-8z M40,48l8,0 0,8 -8,0 0,-8z M48,48l8,0 0,8 -8,0 0,-8z M64,48l8,0 0,8 -8,0 0,-8z M80,48l8,0 0,8 -8,0 0,-8z M96,48l8,0 0,8 -8,0 0,-8z M112,48l8,0 0,8 -8,0 0,-8z M128,48l8,0 0,8 -8,0 0,-8z M144,48l8,0 0,8 -8,0 0,-8z M160,48l8,0 0,8 -8,0 0,-8z M176,48l8,0 0,8 -8,0 0,-8z M192,48l8,0 0,8 -8,0 0,-8z M208,48l8,0 0,8 -8,0 0,-8z M216,48l8,0 0,8 -8,0 0,-8z M224,48l8,0 0,8 -8,0 0,-8z M232,48l8,0 0,8 -8,0 0,-8z M240,48l8,0 0,8 -8,0 0,-8z M248,48l8,0 0,8 -8,0 0,-8z M256,48l8,0 0,8 -8,0 0,-8z M64,56l8,0 0,8 -8,0 0,-8z M88,56l8,0 0,8 -8,0 0,-8z M96,56l8,0 0,8 -8,0 0,-8z M112,56l8,0 0,8 -8,0 0,-8z M136,56l8,0 0,8 -8,0 0,-8z M144,56l8,0 0,8 -8,0 0,-8z M152,56l8,0 0,8 -8,0 0,-8z M160,56l8,0 0,8 -8,0 0,-8z M168,56l8,0 0,8 -8,0 0,-8z M0,64l8,0 0,8 -8,0 0,-8z M32,64l8,0 0,8 -8,0 0,-8z M48,64l8,0 0,8 -8,0 0,-8z M56,64l8,0 0,8 -8,0 0,-8z M64,64l8,0 0,8 -8,0 0,-8z M80,64l8,0 0,8 -8,0 0,-8z M96,64l8,0 0,8 -8,0 0,-8z M120,64l8,0 0,8 -8,0 0,-8z M136,64l8,0 0,8 -8,0 0,-8z M160,64l8,0 0,8 -8,0 0,-8z M168,64l8,0 0,8 -8,0 0,-8z M176,64l8,0 0,8 -8,0 0,-8z M192,64l8,0 0,8 -8,0 0,-8z M200,64l8,0 0,8 -8,0 0,-8z M208,64l8,0 0,8 -8,0 0,-8z M216,64l8,0 0,8 -8,0 0,-8z M224,64l8,0 0,8 -8,0 0,-8z M232,64l8,0 0,8 -8,0 0,-8z M256,64l8,0 0,8 -8,0 0,-8z M16,72l8,0 0,8 -8,0 0,-8z M24,72l8,0 0,8 -8,0 0,-8z M64,72l8,0 0,8 -8,0 0,-8z M80,72l8,0 0,8 -8,0 0,-8z M120,72l8,0 0,8 -8,0 0,-8z M128,72l8,0 0,8 -8,0 0,-8z M136,72l8,0 0,8 -8,0 0,-8z M144,72l8,0 0,8 -8,0 0,-8z M160,72l8,0 0,8 -8,0 0,-8z M184,72l8,0 0,8 -8,0 0,-8z M200,72l8,0 0,8 -8,0 0,-8z M232,72l8,0 0,8 -8,0 0,-8z M240,72l8,0 0,8 -8,0 0,-8z M248,72l8,0 0,8 -8,0 0,-8z M8,80l8,0 0,8 -8,0 0,-8z M16,80l8,0 0,8 -8,0 0,-8z M32,80l8,0 0,8 -8,0 0,-8z M40,80l8,0 0,8 -8,0 0,-8z M48,80l8,0 0,8 -8,0 0,-8z M56,80l8,0 0,8 -8,0 0,-8z M88,80l8,0 0,8 -8,0 0,-8z M104,80l8,0 0,8 -8,0 0,-8z M112,80l8,0 0,8 -8,0 0,-8z M120,80l8,0 0,8 -8,0 0,-8z M144,80l8,0 0,8 -8,0 0,-8z M168,80l8,0 0,8 -8,0 0,-8z M184,80l8,0 0,8 -8,0 0,-8z M232,80l8,0 0,8 -8,0 0,-8z M248,80l8,0 0,8 -8,0 0,-8z M0,88l8,0 0,8 -8,0 0,-8z M16,88l8,0 0,8 -8,0 0,-8z M32,88l8,0 0,8 -8,0 0,-8z M40,88l8,0 0,8 -8,0 0,-8z M56,88l8,0 0,8 -8,0 0,-8z M80,88l8,0 0,8 -8,0 0,-8z M88,88l8,0 0,8 -8,0 0,-8z M96,88l8,0 0,8 -8,0 0,-8z M104,88l8,0 0,8 -8,0 0,-8z M152,88l8,0 0,8 -8,0 0,-8z M160,88l8,0 0,8 -8,0 0,-8z M168,88l8,0 0,8 -8,0 0,-8z M176,88l8,0 0,8 -8,0 0,-8z M192,88l8,0 0,8 -8,0 0,-8z M208,88l8,0 0,8 -8,0 0,-8z M248,88l8,0 0,8 -8,0 0,-8z M0,96l8,0 0,8 -8,0 0,-8z M16,96l8,0 0,8 -8,0 0,-8z M40,96l8,0 0,8 -8,0 0,-8z M48,96l8,0 0,8 -8,0 0,-8z M64,96l8,0 0,8 -8,0 0,-8z M72,96l8,0 0,8 -8,0 0,-8z M80,96l8,0 0,8 -8,0 0,-8z M88,96l8,0 0,8 -8,0 0,-8z M96,96l8,0 0,8 -8,0 0,-8z M104,96l8,0 0,8 -8,0 0,-8z M120,96l8,0 0,8 -8,0 0,-8z M128,96l8,0 0,8 -8,0 0,-8z M168,96l8,0 0,8 -8,0 0,-8z M184,96l8,0 0,8 -8,0 0,-8z M192,96l8,0 0,8 -8,0 0,-8z M208,96l8,0 0,8 -8,0 0,-8z M216,96l8,0 0,8 -8,0 0,-8z M224,96l8,0 0,8 -8,0 0,-8z M232,96l8,0 0,8 -8,0 0,-8z M248,96l8,0 0,8 -8,0 0,-8z M0,104l8,0 0,8 -8,0 0,-8z M32,104l8,0 0,8 -8,0 0,-8z M80,104l8,0 0,8 -8,0 0,-8z M96,104l8,0 0,8 -8,0 0,-8z M104,104l8,0 0,8 -8,0 0,-8z M112,104l8,0 0,8 -8,0 0,-8z M136,104l8,0 0,8 -8,0 0,-8z M144,104l8,0 0,8 -8,0 0,-8z M152,104l8,0 0,8 -8,0 0,-8z M160,104l8,0 0,8 -8,0 0,-8z M168,104l8,0 0,8 -8,0 0,-8z M184,104l8,0 0,8 -8,0 0,-8z M200,104l8,0 0,8 -8,0 0,-8z M216,104l8,0 0,8 -8,0 0,-8z M240,104l8,0 0,8 -8,0 0,-8z M0,112l8,0 0,8 -8,0 0,-8z M8,112l8,0 0,8 -8,0 0,-8z M40,112l8,0 0,8 -8,0 0,-8z M48,112l8,0 0,8 -8,0 0,-8z M56,112l8,0 0,8 -8,0 0,-8z M64,112l8,0 0,8 -8,0 0,-8z M88,112l8,0 0,8 -8,0 0,-8z M120,112l8,0 0,8 -8,0 0,-8z M144,112l8,0 0,8 -8,0 0,-8z M160,112l8,0 0,8 -8,0 0,-8z M184,112l8,0 0,8 -8,0 0,-8z M192,112l8,0 0,8 -8,0 0,-8z M200,112l8,0 0,8 -8,0 0,-8z M208,112l8,0 0,8 -8,0 0,-8z M224,112l8,0 0,8 -8,0 0,-8z M240,112l8,0 0,8 -8,0 0,-8z M248,112l8,0 0,8 -8,0 0,-8z M8,120l8,0 0,8 -8,0 0,-8z M32,120l8,0 0,8 -8,0 0,-8z M72,120l8,0 0,8 -8,0 0,-8z M96,120l8,0 0,8 -8,0 0,-8z M104,120l8,0 0,8 -8,0 0,-8z M120,120l8,0 0,8 -8,0 0,-8z M128,120l8,0 0,8 -8,0 0,-8z M136,120l8,0 0,8 -8,0 0,-8z M144,120l8,0 0,8 -8,0 0,-8z M168,120l8,0 0,8 -8,0 0,-8z M176,120l8,0 0,8 -8,0 0,-8z M184,120l8,0 0,8 -8,0 0,-8z M192,120l8,0 0,8 -8,0 0,-8z M200,120l8,0 0,8 -8,0 0,-8z M208,120l8,0 0,8 -8,0 0,-8z M216,120l8,0 0,8 -8,0 0,-8z M224,120l8,0 0,8 -8,0 0,-8z M0,128l8,0 0,8 -8,0 0,-8z M8,128l8,0 0,8 -8,0 0,-8z M40,128l8,0 0,8 -8,0 0,-8z M48,128l8,0 0,8 -8,0 0,-8z M56,128l8,0 0,8 -8,0 0,-8z M72,128l8,0 0,8 -8,0 0,-8z M96,128l8,0 0,8 -8,0 0,-8z M112,128l8,0 0,8 -8,0 0,-8z M136,128l8,0 0,8 -8,0 0,-8z M152,128l8,0 0,8 -8,0 0,-8z M160,128l8,0 0,8 -8,0 0,-8z M168,128l8,0 0,8 -8,0 0,-8z M176,128l8,0 0,8 -8,0 0,-8z M192,128l8,0 0,8 -8,0 0,-8z M208,128l8,0 0,8 -8,0 0,-8z M224,128l8,0 0,8 -8,0 0,-8z M248,128l8,0 0,8 -8,0 0,-8z M16,136l8,0 0,8 -8,0 0,-8z M56,136l8,0 0,8 -8,0 0,-8z M64,136l8,0 0,8 -8,0 0,-8z M112,136l8,0 0,8 -8,0 0,-8z M120,136l8,0 0,8 -8,0 0,-8z M144,136l8,0 0,8 -8,0 0,-8z M168,136l8,0 0,8 -8,0 0,-8z M184,136l8,0 0,8 -8,0 0,-8z M192,136l8,0 0,8 -8,0 0,-8z M232,136l8,0 0,8 -8,0 0,-8z M240,136l8,0 0,8 -8,0 0,-8z M248,136l8,0 0,8 -8,0 0,-8z M8,144l8,0 0,8 -8,0 0,-8z M24,144l8,0 0,8 -8,0 0,-8z M48,144l8,0 0,8 -8,0 0,-8z M56,144l8,0 0,8 -8,0 0,-8z M64,144l8,0 0,8 -8,0 0,-8z M88,144l8,0 0,8 -8,0 0,-8z M96,144l8,0 0,8 -8,0 0,-8z M112,144l8,0 0,8 -8,0 0,-8z M120,144l8,0 0,8 -8,0 0,-8z M128,144l8,0 0,8 -8,0 0,-8z M136,144l8,0 0,8 -8,0 0,-8z M160,144l8,0 0,8 -8,0 0,-8z M184,144l8,0 0,8 -8,0 0,-8z M192,144l8,0 0,8 -8,0 0,-8z M200,144l8,0 0,8 -8,0 0,-8z M216,144l8,0 0,8 -8,0 0,-8z M232,144l8,0 0,8 -8,0 0,-8z M248,144l8,0 0,8 -8,0 0,-8z M8,152l8,0 0,8 -8,0 0,-8z M24,152l8,0 0,8 -8,0 0,-8z M40,152l8,0 0,8 -8,0 0,-8z M72,152l8,0 0,8 -8,0 0,-8z M80,152l8,0 0,8 -8,0 0,-8z M96,152l8,0 0,8 -8,0 0,-8z M112,152l8,0 0,8 -8,0 0,-8z M136,152l8,0 0,8 -8,0 0,-8z M144,152l8,0 0,8 -8,0 0,-8z M168,152l8,0 0,8 -8,0 0,-8z M192,152l8,0 0,8 -8,0 0,-8z M208,152l8,0 0,8 -8,0 0,-8z M216,152l8,0 0,8 -8,0 0,-8z M256,152l8,0 0,8 -8,0 0,-8z M0,160l8,0 0,8 -8,0 0,-8z M16,160l8,0 0,8 -8,0 0,-8z M48,160l8,0 0,8 -8,0 0,-8z M64,160l8,0 0,8 -8,0 0,-8z M72,160l8,0 0,8 -8,0 0,-8z M80,160l8,0 0,8 -8,0 0,-8z M88,160l8,0 0,8 -8,0 0,-8z M112,160l8,0 0,8 -8,0 0,-8z M120,160l8,0 0,8 -8,0 0,-8z M144,160l8,0 0,8 -8,0 0,-8z M160,160l8,0 0,8 -8,0 0,-8z M192,160l8,0 0,8 -8,0 0,-8z M208,160l8,0 0,8 -8,0 0,-8z M224,160l8,0 0,8 -8,0 0,-8z M232,160l8,0 0,8 -8,0 0,-8z M248,160l8,0 0,8 -8,0 0,-8z M256,160l8,0 0,8 -8,0 0,-8z M0,168l8,0 0,8 -8,0 0,-8z M8,168l8,0 0,8 -8,0 0,-8z M16,168l8,0 0,8 -8,0 0,-8z M24,168l8,0 0,8 -8,0 0,-8z M72,168l8,0 0,8 -8,0 0,-8z M80,168l8,0 0,8 -8,0 0,-8z M112,168l8,0 0,8 -8,0 0,-8z M128,168l8,0 0,8 -8,0 0,-8z M136,168l8,0 0,8 -8,0 0,-8z M152,168l8,0 0,8 -8,0 0,-8z M168,168l8,0 0,8 -8,0 0,-8z M184,168l8,0 0,8 -8,0 0,-8z M200,168l8,0 0,8 -8,0 0,-8z M216,168l8,0 0,8 -8,0 0,-8z M248,168l8,0 0,8 -8,0 0,-8z M16,176l8,0 0,8 -8,0 0,-8z M32,176l8,0 0,8 -8,0 0,-8z M40,176l8,0 0,8 -8,0 0,-8z M48,176l8,0 0,8 -8,0 0,-8z M56,176l8,0 0,8 -8,0 0,-8z M64,176l8,0 0,8 -8,0 0,-8z M80,176l8,0 0,8 -8,0 0,-8z M88,176l8,0 0,8 -8,0 0,-8z M104,176l8,0 0,8 -8,0 0,-8z M112,176l8,0 0,8 -8,0 0,-8z M128,176l8,0 0,8 -8,0 0,-8z M136,176l8,0 0,8 -8,0 0,-8z M144,176l8,0 0,8 -8,0 0,-8z M152,176l8,0 0,8 -8,0 0,-8z M176,176l8,0 0,8 -8,0 0,-8z M184,176l8,0 0,8 -8,0 0,-8z M200,176l8,0 0,8 -8,0 0,-8z M216,176l8,0 0,8 -8,0 0,-8z M248,176l8,0 0,8 -8,0 0,-8z M24,184l8,0 0,8 -8,0 0,-8z M32,184l8,0 0,8 -8,0 0,-8z M56,184l8,0 0,8 -8,0 0,-8z M72,184l8,0 0,8 -8,0 0,-8z M80,184l8,0 0,8 -8,0 0,-8z M136,184l8,0 0,8 -8,0 0,-8z M144,184l8,0 0,8 -8,0 0,-8z M152,184l8,0 0,8 -8,0 0,-8z M160,184l8,0 0,8 -8,0 0,-8z M168,184l8,0 0,8 -8,0 0,-8z M192,184l8,0 0,8 -8,0 0,-8z M200,184l8,0 0,8 -8,0 0,-8z M208,184l8,0 0,8 -8,0 0,-8z M216,184l8,0 0,8 -8,0 0,-8z M224,184l8,0 0,8 -8,0 0,-8z M248,184l8,0 0,8 -8,0 0,-8z M256,184l8,0 0,8 -8,0 0,-8z M0,192l8,0 0,8 -8,0 0,-8z M8,192l8,0 0,8 -8,0 0,-8z M16,192l8,0 0,8 -8,0 0,-8z M24,192l8,0 0,8 -8,0 0,-8z M32,192l8,0 0,8 -8,0 0,-8z M40,192l8,0 0,8 -8,0 0,-8z M48,192l8,0 0,8 -8,0 0,-8z M64,192l8,0 0,8 -8,0 0,-8z M72,192l8,0 0,8 -8,0 0,-8z M88,192l8,0 0,8 -8,0 0,-8z M96,192l8,0 0,8 -8,0 0,-8z M104,192l8,0 0,8 -8,0 0,-8z M120,192l8,0 0,8 -8,0 0,-8z M136,192l8,0 0,8 -8,0 0,-8z M144,192l8,0 0,8 -8,0 0,-8z M160,192l8,0 0,8 -8,0 0,-8z M168,192l8,0 0,8 -8,0 0,-8z M176,192l8,0 0,8 -8,0 0,-8z M184,192l8,0 0,8 -8,0 0,-8z M192,192l8,0 0,8 -8,0 0,-8z M200,192l8,0 0,8 -8,0 0,-8z M208,192l8,0 0,8 -8,0 0,-8z M216,192l8,0 0,8 -8,0 0,-8z M224,192l8,0 0,8 -8,0 0,-8z M64,200l8,0 0,8 -8,0 0,-8z M72,200l8,0 0,8 -8,0 0,-8z M80,200l8,0 0,8 -8,0 0,-8z M88,200l8,0 0,8 -8,0 0,-8z M104,200l8,0 0,8 -8,0 0,-8z M120,200l8,0 0,8 -8,0 0,-8z M128,200l8,0 0,8 -8,0 0,-8z M136,200l8,0 0,8 -8,0 0,-8z M144,200l8,0 0,8 -8,0 0,-8z M168,200l8,0 0,8 -8,0 0,-8z M184,200l8,0 0,8 -8,0 0,-8z M192,200l8,0 0,8 -8,0 0,-8z M224,200l8,0 0,8 -8,0 0,-8z M240,200l8,0 0,8 -8,0 0,-8z M0,208l8,0 0,8 -8,0 0,-8z M8,208l8,0 0,8 -8,0 0,-8z M16,208l8,0 0,8 -8,0 0,-8z M24,208l8,0 0,8 -8,0 0,-8z M32,208l8,0 0,8 -8,0 0,-8z M40,208l8,0 0,8 -8,0 0,-8z M48,208l8,0 0,8 -8,0 0,-8z M64,208l8,0 0,8 -8,0 0,-8z M72,208l8,0 0,8 -8,0 0,-8z M80,208l8,0 0,8 -8,0 0,-8z M96,208l8,0 0,8 -8,0 0,-8z M104,208l8,0 0,8 -8,0 0,-8z M120,208l8,0 0,8 -8,0 0,-8z M144,208l8,0 0,8 -8,0 0,-8z M192,208l8,0 0,8 -8,0 0,-8z M208,208l8,0 0,8 -8,0 0,-8z M224,208l8,0 0,8 -8,0 0,-8z M232,208l8,0 0,8 -8,0 0,-8z M248,208l8,0 0,8 -8,0 0,-8z M0,216l8,0 0,8 -8,0 0,-8z M48,216l8,0 0,8 -8,0 0,-8z M72,216l8,0 0,8 -8,0 0,-8z M80,216l8,0 0,8 -8,0 0,-8z M104,216l8,0 0,8 -8,0 0,-8z M120,216l8,0 0,8 -8,0 0,-8z M128,216l8,0 0,8 -8,0 0,-8z M160,216l8,0 0,8 -8,0 0,-8z M176,216l8,0 0,8 -8,0 0,-8z M192,216l8,0 0,8 -8,0 0,-8z M224,216l8,0 0,8 -8,0 0,-8z M248,216l8,0 0,8 -8,0 0,-8z M0,224l8,0 0,8 -8,0 0,-8z M16,224l8,0 0,8 -8,0 0,-8z M24,224l8,0 0,8 -8,0 0,-8z M32,224l8,0 0,8 -8,0 0,-8z M48,224l8,0 0,8 -8,0 0,-8z M64,224l8,0 0,8 -8,0 0,-8z M72,224l8,0 0,8 -8,0 0,-8z M88,224l8,0 0,8 -8,0 0,-8z M104,224l8,0 0,8 -8,0 0,-8z M112,224l8,0 0,8 -8,0 0,-8z M120,224l8,0 0,8 -8,0 0,-8z M128,224l8,0 0,8 -8,0 0,-8z M152,224l8,0 0,8 -8,0 0,-8z M176,224l8,0 0,8 -8,0 0,-8z M192,224l8,0 0,8 -8,0 0,-8z M200,224l8,0 0,8 -8,0 0,-8z M208,224l8,0 0,8 -8,0 0,-8z M216,224l8,0 0,8 -8,0 0,-8z M224,224l8,0 0,8 -8,0 0,-8z M232,224l8,0 0,8 -8,0 0,-8z M256,224l8,0 0,8 -8,0 0,-8z M0,232l8,0 0,8 -8,0 0,-8z M16,232l8,0 0,8 -8,0 0,-8z M24,232l8,0 0,8 -8,0 0,-8z M32,232l8,0 0,8 -8,0 0,-8z M48,232l8,0 0,8 -8,0 0,-8z M80,232l8,0 0,8 -8,0 0,-8z M88,232l8,0 0,8 -8,0 0,-8z M136,232l8,0 0,8 -8,0 0,-8z M144,232l8,0 0,8 -8,0 0,-8z M152,232l8,0 0,8 -8,0 0,-8z M160,232l8,0 0,8 -8,0 0,-8z M184,232l8,0 0,8 -8,0 0,-8z M208,232l8,0 0,8 -8,0 0,-8z M216,232l8,0 0,8 -8,0 0,-8z M224,232l8,0 0,8 -8,0 0,-8z M232,232l8,0 0,8 -8,0 0,-8z M248,232l8,0 0,8 -8,0 0,-8z M0,240l8,0 0,8 -8,0 0,-8z M16,240l8,0 0,8 -8,0 0,-8z M24,240l8,0 0,8 -8,0 0,-8z M32,240l8,0 0,8 -8,0 0,-8z M48,240l8,0 0,8 -8,0 0,-8z M72,240l8,0 0,8 -8,0 0,-8z M80,240l8,0 0,8 -8,0 0,-8z M112,240l8,0 0,8 -8,0 0,-8z M120,240l8,0 0,8 -8,0 0,-8z M144,240l8,0 0,8 -8,0 0,-8z M160,240l8,0 0,8 -8,0 0,-8z M168,240l8,0 0,8 -8,0 0,-8z M200,240l8,0 0,8 -8,0 0,-8z M208,240l8,0 0,8 -8,0 0,-8z M216,240l8,0 0,8 -8,0 0,-8z M224,240l8,0 0,8 -8,0 0,-8z M240,240l8,0 0,8 -8,0 0,-8z M0,248l8,0 0,8 -8,0 0,-8z M48,248l8,0 0,8 -8,0 0,-8z M72,248l8,0 0,8 -8,0 0,-8z M96,248l8,0 0,8 -8,0 0,-8z M104,248l8,0 0,8 -8,0 0,-8z M120,248l8,0 0,8 -8,0 0,-8z M128,248l8,0 0,8 -8,0 0,-8z M136,248l8,0 0,8 -8,0 0,-8z M144,248l8,0 0,8 -8,0 0,-8z M168,248l8,0 0,8 -8,0 0,-8z M184,248l8,0 0,8 -8,0 0,-8z M192,248l8,0 0,8 -8,0 0,-8z M208,248l8,0 0,8 -8,0 0,-8z M0,256l8,0 0,8 -8,0 0,-8z M8,256l8,0 0,8 -8,0 0,-8z M16,256l8,0 0,8 -8,0 0,-8z M24,256l8,0 0,8 -8,0 0,-8z M32,256l8,0 0,8 -8,0 0,-8z M40,256l8,0 0,8 -8,0 0,-8z M48,256l8,0 0,8 -8,0 0,-8z M64,256l8,0 0,8 -8,0 0,-8z M80,256l8,0 0,8 -8,0 0,-8z M88,256l8,0 0,8 -8,0 0,-8z M96,256l8,0 0,8 -8,0 0,-8z M112,256l8,0 0,8 -8,0 0,-8z M136,256l8,0 0,8 -8,0 0,-8z M152,256l8,0 0,8 -8,0 0,-8z M160,256l8,0 0,8 -8,0 0,-8z M168,256l8,0 0,8 -8,0 0,-8z M176,256l8,0 0,8 -8,0 0,-8z M184,256l8,0 0,8 -8,0 0,-8z M192,256l8,0 0,8 -8,0 0,-8z M256,256l8,0 0,8 -8,0 0,-8z " stroke="transparent" fill="black"></path></svg></div>
+          <div class="qr-info" data-om-id="15a8480e:1009">
+            <div class="qr-icon" data-om-id="15a8480e:1010">
+              <!-- LinkedIn icon -->
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="currentColor" data-om-id="15a8480e:1011"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.063-2.065 2.063 2.063 0 112.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" data-om-id="15a8480e:1012"></path></svg>
+            </div>
+            <div class="qr-platform" data-om-id="15a8480e:1013">LinkedIn</div>
+            <div class="qr-handle" data-om-id="15a8480e:1014">in/mauriciobarfknecht</div>
+            <div class="qr-hint" data-om-id="15a8480e:1015">aponte a câmera</div>
+          </div>
+        </div>
+        <div class="qr-card" data-om-id="15a8480e:1016">
+          <div class="qr-svg" data-qr="https://www.instagram.com/mauriciobarfknecht/" data-om-id="15a8480e:1017"><svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 264 264" preserveAspectRatio="xMinYMin meet"><rect width="100%" height="100%" fill="white" cx="0" cy="0"></rect><path d="M0,0l8,0 0,8 -8,0 0,-8z M8,0l8,0 0,8 -8,0 0,-8z M16,0l8,0 0,8 -8,0 0,-8z M24,0l8,0 0,8 -8,0 0,-8z M32,0l8,0 0,8 -8,0 0,-8z M40,0l8,0 0,8 -8,0 0,-8z M48,0l8,0 0,8 -8,0 0,-8z M64,0l8,0 0,8 -8,0 0,-8z M72,0l8,0 0,8 -8,0 0,-8z M80,0l8,0 0,8 -8,0 0,-8z M104,0l8,0 0,8 -8,0 0,-8z M120,0l8,0 0,8 -8,0 0,-8z M128,0l8,0 0,8 -8,0 0,-8z M144,0l8,0 0,8 -8,0 0,-8z M160,0l8,0 0,8 -8,0 0,-8z M168,0l8,0 0,8 -8,0 0,-8z M184,0l8,0 0,8 -8,0 0,-8z M208,0l8,0 0,8 -8,0 0,-8z M216,0l8,0 0,8 -8,0 0,-8z M224,0l8,0 0,8 -8,0 0,-8z M232,0l8,0 0,8 -8,0 0,-8z M240,0l8,0 0,8 -8,0 0,-8z M248,0l8,0 0,8 -8,0 0,-8z M256,0l8,0 0,8 -8,0 0,-8z M0,8l8,0 0,8 -8,0 0,-8z M48,8l8,0 0,8 -8,0 0,-8z M72,8l8,0 0,8 -8,0 0,-8z M80,8l8,0 0,8 -8,0 0,-8z M88,8l8,0 0,8 -8,0 0,-8z M104,8l8,0 0,8 -8,0 0,-8z M112,8l8,0 0,8 -8,0 0,-8z M128,8l8,0 0,8 -8,0 0,-8z M144,8l8,0 0,8 -8,0 0,-8z M152,8l8,0 0,8 -8,0 0,-8z M168,8l8,0 0,8 -8,0 0,-8z M176,8l8,0 0,8 -8,0 0,-8z M208,8l8,0 0,8 -8,0 0,-8z M256,8l8,0 0,8 -8,0 0,-8z M0,16l8,0 0,8 -8,0 0,-8z M16,16l8,0 0,8 -8,0 0,-8z M24,16l8,0 0,8 -8,0 0,-8z M32,16l8,0 0,8 -8,0 0,-8z M48,16l8,0 0,8 -8,0 0,-8z M72,16l8,0 0,8 -8,0 0,-8z M88,16l8,0 0,8 -8,0 0,-8z M96,16l8,0 0,8 -8,0 0,-8z M112,16l8,0 0,8 -8,0 0,-8z M120,16l8,0 0,8 -8,0 0,-8z M136,16l8,0 0,8 -8,0 0,-8z M144,16l8,0 0,8 -8,0 0,-8z M160,16l8,0 0,8 -8,0 0,-8z M168,16l8,0 0,8 -8,0 0,-8z M184,16l8,0 0,8 -8,0 0,-8z M208,16l8,0 0,8 -8,0 0,-8z M224,16l8,0 0,8 -8,0 0,-8z M232,16l8,0 0,8 -8,0 0,-8z M240,16l8,0 0,8 -8,0 0,-8z M256,16l8,0 0,8 -8,0 0,-8z M0,24l8,0 0,8 -8,0 0,-8z M16,24l8,0 0,8 -8,0 0,-8z M24,24l8,0 0,8 -8,0 0,-8z M32,24l8,0 0,8 -8,0 0,-8z M48,24l8,0 0,8 -8,0 0,-8z M64,24l8,0 0,8 -8,0 0,-8z M72,24l8,0 0,8 -8,0 0,-8z M96,24l8,0 0,8 -8,0 0,-8z M120,24l8,0 0,8 -8,0 0,-8z M128,24l8,0 0,8 -8,0 0,-8z M136,24l8,0 0,8 -8,0 0,-8z M152,24l8,0 0,8 -8,0 0,-8z M168,24l8,0 0,8 -8,0 0,-8z M176,24l8,0 0,8 -8,0 0,-8z M208,24l8,0 0,8 -8,0 0,-8z M224,24l8,0 0,8 -8,0 0,-8z M232,24l8,0 0,8 -8,0 0,-8z M240,24l8,0 0,8 -8,0 0,-8z M256,24l8,0 0,8 -8,0 0,-8z M0,32l8,0 0,8 -8,0 0,-8z M16,32l8,0 0,8 -8,0 0,-8z M24,32l8,0 0,8 -8,0 0,-8z M32,32l8,0 0,8 -8,0 0,-8z M48,32l8,0 0,8 -8,0 0,-8z M64,32l8,0 0,8 -8,0 0,-8z M80,32l8,0 0,8 -8,0 0,-8z M96,32l8,0 0,8 -8,0 0,-8z M104,32l8,0 0,8 -8,0 0,-8z M128,32l8,0 0,8 -8,0 0,-8z M136,32l8,0 0,8 -8,0 0,-8z M152,32l8,0 0,8 -8,0 0,-8z M168,32l8,0 0,8 -8,0 0,-8z M184,32l8,0 0,8 -8,0 0,-8z M192,32l8,0 0,8 -8,0 0,-8z M208,32l8,0 0,8 -8,0 0,-8z M224,32l8,0 0,8 -8,0 0,-8z M232,32l8,0 0,8 -8,0 0,-8z M240,32l8,0 0,8 -8,0 0,-8z M256,32l8,0 0,8 -8,0 0,-8z M0,40l8,0 0,8 -8,0 0,-8z M48,40l8,0 0,8 -8,0 0,-8z M64,40l8,0 0,8 -8,0 0,-8z M72,40l8,0 0,8 -8,0 0,-8z M88,40l8,0 0,8 -8,0 0,-8z M112,40l8,0 0,8 -8,0 0,-8z M120,40l8,0 0,8 -8,0 0,-8z M136,40l8,0 0,8 -8,0 0,-8z M160,40l8,0 0,8 -8,0 0,-8z M168,40l8,0 0,8 -8,0 0,-8z M176,40l8,0 0,8 -8,0 0,-8z M192,40l8,0 0,8 -8,0 0,-8z M208,40l8,0 0,8 -8,0 0,-8z M256,40l8,0 0,8 -8,0 0,-8z M0,48l8,0 0,8 -8,0 0,-8z M8,48l8,0 0,8 -8,0 0,-8z M16,48l8,0 0,8 -8,0 0,-8z M24,48l8,0 0,8 -8,0 0,-8z M32,48l8,0 0,8 -8,0 0,-8z M40,48l8,0 0,8 -8,0 0,-8z M48,48l8,0 0,8 -8,0 0,-8z M64,48l8,0 0,8 -8,0 0,-8z M80,48l8,0 0,8 -8,0 0,-8z M96,48l8,0 0,8 -8,0 0,-8z M112,48l8,0 0,8 -8,0 0,-8z M128,48l8,0 0,8 -8,0 0,-8z M144,48l8,0 0,8 -8,0 0,-8z M160,48l8,0 0,8 -8,0 0,-8z M176,48l8,0 0,8 -8,0 0,-8z M192,48l8,0 0,8 -8,0 0,-8z M208,48l8,0 0,8 -8,0 0,-8z M216,48l8,0 0,8 -8,0 0,-8z M224,48l8,0 0,8 -8,0 0,-8z M232,48l8,0 0,8 -8,0 0,-8z M240,48l8,0 0,8 -8,0 0,-8z M248,48l8,0 0,8 -8,0 0,-8z M256,48l8,0 0,8 -8,0 0,-8z M64,56l8,0 0,8 -8,0 0,-8z M72,56l8,0 0,8 -8,0 0,-8z M80,56l8,0 0,8 -8,0 0,-8z M136,56l8,0 0,8 -8,0 0,-8z M152,56l8,0 0,8 -8,0 0,-8z M160,56l8,0 0,8 -8,0 0,-8z M168,56l8,0 0,8 -8,0 0,-8z M176,56l8,0 0,8 -8,0 0,-8z M184,56l8,0 0,8 -8,0 0,-8z M192,56l8,0 0,8 -8,0 0,-8z M0,64l8,0 0,8 -8,0 0,-8z M32,64l8,0 0,8 -8,0 0,-8z M48,64l8,0 0,8 -8,0 0,-8z M56,64l8,0 0,8 -8,0 0,-8z M64,64l8,0 0,8 -8,0 0,-8z M88,64l8,0 0,8 -8,0 0,-8z M120,64l8,0 0,8 -8,0 0,-8z M128,64l8,0 0,8 -8,0 0,-8z M136,64l8,0 0,8 -8,0 0,-8z M160,64l8,0 0,8 -8,0 0,-8z M168,64l8,0 0,8 -8,0 0,-8z M176,64l8,0 0,8 -8,0 0,-8z M192,64l8,0 0,8 -8,0 0,-8z M200,64l8,0 0,8 -8,0 0,-8z M208,64l8,0 0,8 -8,0 0,-8z M216,64l8,0 0,8 -8,0 0,-8z M224,64l8,0 0,8 -8,0 0,-8z M232,64l8,0 0,8 -8,0 0,-8z M256,64l8,0 0,8 -8,0 0,-8z M8,72l8,0 0,8 -8,0 0,-8z M16,72l8,0 0,8 -8,0 0,-8z M72,72l8,0 0,8 -8,0 0,-8z M80,72l8,0 0,8 -8,0 0,-8z M88,72l8,0 0,8 -8,0 0,-8z M96,72l8,0 0,8 -8,0 0,-8z M112,72l8,0 0,8 -8,0 0,-8z M120,72l8,0 0,8 -8,0 0,-8z M128,72l8,0 0,8 -8,0 0,-8z M136,72l8,0 0,8 -8,0 0,-8z M144,72l8,0 0,8 -8,0 0,-8z M168,72l8,0 0,8 -8,0 0,-8z M176,72l8,0 0,8 -8,0 0,-8z M184,72l8,0 0,8 -8,0 0,-8z M200,72l8,0 0,8 -8,0 0,-8z M232,72l8,0 0,8 -8,0 0,-8z M240,72l8,0 0,8 -8,0 0,-8z M248,72l8,0 0,8 -8,0 0,-8z M8,80l8,0 0,8 -8,0 0,-8z M32,80l8,0 0,8 -8,0 0,-8z M40,80l8,0 0,8 -8,0 0,-8z M48,80l8,0 0,8 -8,0 0,-8z M56,80l8,0 0,8 -8,0 0,-8z M80,80l8,0 0,8 -8,0 0,-8z M88,80l8,0 0,8 -8,0 0,-8z M104,80l8,0 0,8 -8,0 0,-8z M112,80l8,0 0,8 -8,0 0,-8z M120,80l8,0 0,8 -8,0 0,-8z M144,80l8,0 0,8 -8,0 0,-8z M160,80l8,0 0,8 -8,0 0,-8z M184,80l8,0 0,8 -8,0 0,-8z M208,80l8,0 0,8 -8,0 0,-8z M232,80l8,0 0,8 -8,0 0,-8z M248,80l8,0 0,8 -8,0 0,-8z M0,88l8,0 0,8 -8,0 0,-8z M8,88l8,0 0,8 -8,0 0,-8z M16,88l8,0 0,8 -8,0 0,-8z M32,88l8,0 0,8 -8,0 0,-8z M80,88l8,0 0,8 -8,0 0,-8z M88,88l8,0 0,8 -8,0 0,-8z M96,88l8,0 0,8 -8,0 0,-8z M104,88l8,0 0,8 -8,0 0,-8z M120,88l8,0 0,8 -8,0 0,-8z M128,88l8,0 0,8 -8,0 0,-8z M176,88l8,0 0,8 -8,0 0,-8z M192,88l8,0 0,8 -8,0 0,-8z M200,88l8,0 0,8 -8,0 0,-8z M208,88l8,0 0,8 -8,0 0,-8z M248,88l8,0 0,8 -8,0 0,-8z M16,96l8,0 0,8 -8,0 0,-8z M32,96l8,0 0,8 -8,0 0,-8z M40,96l8,0 0,8 -8,0 0,-8z M48,96l8,0 0,8 -8,0 0,-8z M56,96l8,0 0,8 -8,0 0,-8z M64,96l8,0 0,8 -8,0 0,-8z M72,96l8,0 0,8 -8,0 0,-8z M104,96l8,0 0,8 -8,0 0,-8z M128,96l8,0 0,8 -8,0 0,-8z M152,96l8,0 0,8 -8,0 0,-8z M176,96l8,0 0,8 -8,0 0,-8z M184,96l8,0 0,8 -8,0 0,-8z M208,96l8,0 0,8 -8,0 0,-8z M224,96l8,0 0,8 -8,0 0,-8z M232,96l8,0 0,8 -8,0 0,-8z M248,96l8,0 0,8 -8,0 0,-8z M0,104l8,0 0,8 -8,0 0,-8z M8,104l8,0 0,8 -8,0 0,-8z M40,104l8,0 0,8 -8,0 0,-8z M56,104l8,0 0,8 -8,0 0,-8z M96,104l8,0 0,8 -8,0 0,-8z M104,104l8,0 0,8 -8,0 0,-8z M112,104l8,0 0,8 -8,0 0,-8z M144,104l8,0 0,8 -8,0 0,-8z M152,104l8,0 0,8 -8,0 0,-8z M160,104l8,0 0,8 -8,0 0,-8z M184,104l8,0 0,8 -8,0 0,-8z M200,104l8,0 0,8 -8,0 0,-8z M216,104l8,0 0,8 -8,0 0,-8z M232,104l8,0 0,8 -8,0 0,-8z M0,112l8,0 0,8 -8,0 0,-8z M8,112l8,0 0,8 -8,0 0,-8z M16,112l8,0 0,8 -8,0 0,-8z M24,112l8,0 0,8 -8,0 0,-8z M48,112l8,0 0,8 -8,0 0,-8z M64,112l8,0 0,8 -8,0 0,-8z M72,112l8,0 0,8 -8,0 0,-8z M88,112l8,0 0,8 -8,0 0,-8z M96,112l8,0 0,8 -8,0 0,-8z M104,112l8,0 0,8 -8,0 0,-8z M120,112l8,0 0,8 -8,0 0,-8z M160,112l8,0 0,8 -8,0 0,-8z M176,112l8,0 0,8 -8,0 0,-8z M184,112l8,0 0,8 -8,0 0,-8z M200,112l8,0 0,8 -8,0 0,-8z M208,112l8,0 0,8 -8,0 0,-8z M216,112l8,0 0,8 -8,0 0,-8z M240,112l8,0 0,8 -8,0 0,-8z M248,112l8,0 0,8 -8,0 0,-8z M0,120l8,0 0,8 -8,0 0,-8z M64,120l8,0 0,8 -8,0 0,-8z M72,120l8,0 0,8 -8,0 0,-8z M80,120l8,0 0,8 -8,0 0,-8z M104,120l8,0 0,8 -8,0 0,-8z M120,120l8,0 0,8 -8,0 0,-8z M128,120l8,0 0,8 -8,0 0,-8z M136,120l8,0 0,8 -8,0 0,-8z M144,120l8,0 0,8 -8,0 0,-8z M168,120l8,0 0,8 -8,0 0,-8z M184,120l8,0 0,8 -8,0 0,-8z M200,120l8,0 0,8 -8,0 0,-8z M208,120l8,0 0,8 -8,0 0,-8z M224,120l8,0 0,8 -8,0 0,-8z M0,128l8,0 0,8 -8,0 0,-8z M8,128l8,0 0,8 -8,0 0,-8z M16,128l8,0 0,8 -8,0 0,-8z M32,128l8,0 0,8 -8,0 0,-8z M40,128l8,0 0,8 -8,0 0,-8z M48,128l8,0 0,8 -8,0 0,-8z M64,128l8,0 0,8 -8,0 0,-8z M72,128l8,0 0,8 -8,0 0,-8z M96,128l8,0 0,8 -8,0 0,-8z M104,128l8,0 0,8 -8,0 0,-8z M112,128l8,0 0,8 -8,0 0,-8z M136,128l8,0 0,8 -8,0 0,-8z M152,128l8,0 0,8 -8,0 0,-8z M160,128l8,0 0,8 -8,0 0,-8z M168,128l8,0 0,8 -8,0 0,-8z M176,128l8,0 0,8 -8,0 0,-8z M184,128l8,0 0,8 -8,0 0,-8z M192,128l8,0 0,8 -8,0 0,-8z M208,128l8,0 0,8 -8,0 0,-8z M224,128l8,0 0,8 -8,0 0,-8z M248,128l8,0 0,8 -8,0 0,-8z M0,136l8,0 0,8 -8,0 0,-8z M40,136l8,0 0,8 -8,0 0,-8z M72,136l8,0 0,8 -8,0 0,-8z M80,136l8,0 0,8 -8,0 0,-8z M104,136l8,0 0,8 -8,0 0,-8z M120,136l8,0 0,8 -8,0 0,-8z M128,136l8,0 0,8 -8,0 0,-8z M144,136l8,0 0,8 -8,0 0,-8z M176,136l8,0 0,8 -8,0 0,-8z M184,136l8,0 0,8 -8,0 0,-8z M192,136l8,0 0,8 -8,0 0,-8z M232,136l8,0 0,8 -8,0 0,-8z M240,136l8,0 0,8 -8,0 0,-8z M248,136l8,0 0,8 -8,0 0,-8z M8,144l8,0 0,8 -8,0 0,-8z M16,144l8,0 0,8 -8,0 0,-8z M24,144l8,0 0,8 -8,0 0,-8z M32,144l8,0 0,8 -8,0 0,-8z M48,144l8,0 0,8 -8,0 0,-8z M56,144l8,0 0,8 -8,0 0,-8z M72,144l8,0 0,8 -8,0 0,-8z M96,144l8,0 0,8 -8,0 0,-8z M120,144l8,0 0,8 -8,0 0,-8z M136,144l8,0 0,8 -8,0 0,-8z M168,144l8,0 0,8 -8,0 0,-8z M176,144l8,0 0,8 -8,0 0,-8z M184,144l8,0 0,8 -8,0 0,-8z M192,144l8,0 0,8 -8,0 0,-8z M200,144l8,0 0,8 -8,0 0,-8z M208,144l8,0 0,8 -8,0 0,-8z M216,144l8,0 0,8 -8,0 0,-8z M232,144l8,0 0,8 -8,0 0,-8z M248,144l8,0 0,8 -8,0 0,-8z M0,152l8,0 0,8 -8,0 0,-8z M24,152l8,0 0,8 -8,0 0,-8z M40,152l8,0 0,8 -8,0 0,-8z M56,152l8,0 0,8 -8,0 0,-8z M64,152l8,0 0,8 -8,0 0,-8z M72,152l8,0 0,8 -8,0 0,-8z M96,152l8,0 0,8 -8,0 0,-8z M112,152l8,0 0,8 -8,0 0,-8z M120,152l8,0 0,8 -8,0 0,-8z M136,152l8,0 0,8 -8,0 0,-8z M144,152l8,0 0,8 -8,0 0,-8z M152,152l8,0 0,8 -8,0 0,-8z M168,152l8,0 0,8 -8,0 0,-8z M192,152l8,0 0,8 -8,0 0,-8z M208,152l8,0 0,8 -8,0 0,-8z M216,152l8,0 0,8 -8,0 0,-8z M248,152l8,0 0,8 -8,0 0,-8z M256,152l8,0 0,8 -8,0 0,-8z M8,160l8,0 0,8 -8,0 0,-8z M24,160l8,0 0,8 -8,0 0,-8z M40,160l8,0 0,8 -8,0 0,-8z M48,160l8,0 0,8 -8,0 0,-8z M56,160l8,0 0,8 -8,0 0,-8z M64,160l8,0 0,8 -8,0 0,-8z M88,160l8,0 0,8 -8,0 0,-8z M104,160l8,0 0,8 -8,0 0,-8z M120,160l8,0 0,8 -8,0 0,-8z M144,160l8,0 0,8 -8,0 0,-8z M152,160l8,0 0,8 -8,0 0,-8z M160,160l8,0 0,8 -8,0 0,-8z M192,160l8,0 0,8 -8,0 0,-8z M208,160l8,0 0,8 -8,0 0,-8z M224,160l8,0 0,8 -8,0 0,-8z M232,160l8,0 0,8 -8,0 0,-8z M248,160l8,0 0,8 -8,0 0,-8z M256,160l8,0 0,8 -8,0 0,-8z M0,168l8,0 0,8 -8,0 0,-8z M8,168l8,0 0,8 -8,0 0,-8z M24,168l8,0 0,8 -8,0 0,-8z M40,168l8,0 0,8 -8,0 0,-8z M64,168l8,0 0,8 -8,0 0,-8z M72,168l8,0 0,8 -8,0 0,-8z M104,168l8,0 0,8 -8,0 0,-8z M112,168l8,0 0,8 -8,0 0,-8z M128,168l8,0 0,8 -8,0 0,-8z M136,168l8,0 0,8 -8,0 0,-8z M152,168l8,0 0,8 -8,0 0,-8z M176,168l8,0 0,8 -8,0 0,-8z M184,168l8,0 0,8 -8,0 0,-8z M200,168l8,0 0,8 -8,0 0,-8z M216,168l8,0 0,8 -8,0 0,-8z M240,168l8,0 0,8 -8,0 0,-8z M248,168l8,0 0,8 -8,0 0,-8z M16,176l8,0 0,8 -8,0 0,-8z M40,176l8,0 0,8 -8,0 0,-8z M48,176l8,0 0,8 -8,0 0,-8z M112,176l8,0 0,8 -8,0 0,-8z M128,176l8,0 0,8 -8,0 0,-8z M144,176l8,0 0,8 -8,0 0,-8z M152,176l8,0 0,8 -8,0 0,-8z M168,176l8,0 0,8 -8,0 0,-8z M184,176l8,0 0,8 -8,0 0,-8z M192,176l8,0 0,8 -8,0 0,-8z M200,176l8,0 0,8 -8,0 0,-8z M216,176l8,0 0,8 -8,0 0,-8z M232,176l8,0 0,8 -8,0 0,-8z M240,176l8,0 0,8 -8,0 0,-8z M248,176l8,0 0,8 -8,0 0,-8z M16,184l8,0 0,8 -8,0 0,-8z M24,184l8,0 0,8 -8,0 0,-8z M32,184l8,0 0,8 -8,0 0,-8z M112,184l8,0 0,8 -8,0 0,-8z M136,184l8,0 0,8 -8,0 0,-8z M144,184l8,0 0,8 -8,0 0,-8z M152,184l8,0 0,8 -8,0 0,-8z M160,184l8,0 0,8 -8,0 0,-8z M168,184l8,0 0,8 -8,0 0,-8z M176,184l8,0 0,8 -8,0 0,-8z M200,184l8,0 0,8 -8,0 0,-8z M208,184l8,0 0,8 -8,0 0,-8z M216,184l8,0 0,8 -8,0 0,-8z M224,184l8,0 0,8 -8,0 0,-8z M248,184l8,0 0,8 -8,0 0,-8z M0,192l8,0 0,8 -8,0 0,-8z M8,192l8,0 0,8 -8,0 0,-8z M24,192l8,0 0,8 -8,0 0,-8z M32,192l8,0 0,8 -8,0 0,-8z M40,192l8,0 0,8 -8,0 0,-8z M48,192l8,0 0,8 -8,0 0,-8z M56,192l8,0 0,8 -8,0 0,-8z M80,192l8,0 0,8 -8,0 0,-8z M104,192l8,0 0,8 -8,0 0,-8z M120,192l8,0 0,8 -8,0 0,-8z M136,192l8,0 0,8 -8,0 0,-8z M168,192l8,0 0,8 -8,0 0,-8z M176,192l8,0 0,8 -8,0 0,-8z M192,192l8,0 0,8 -8,0 0,-8z M200,192l8,0 0,8 -8,0 0,-8z M208,192l8,0 0,8 -8,0 0,-8z M216,192l8,0 0,8 -8,0 0,-8z M224,192l8,0 0,8 -8,0 0,-8z M64,200l8,0 0,8 -8,0 0,-8z M88,200l8,0 0,8 -8,0 0,-8z M120,200l8,0 0,8 -8,0 0,-8z M128,200l8,0 0,8 -8,0 0,-8z M136,200l8,0 0,8 -8,0 0,-8z M144,200l8,0 0,8 -8,0 0,-8z M168,200l8,0 0,8 -8,0 0,-8z M184,200l8,0 0,8 -8,0 0,-8z M192,200l8,0 0,8 -8,0 0,-8z M224,200l8,0 0,8 -8,0 0,-8z M240,200l8,0 0,8 -8,0 0,-8z M248,200l8,0 0,8 -8,0 0,-8z M0,208l8,0 0,8 -8,0 0,-8z M8,208l8,0 0,8 -8,0 0,-8z M16,208l8,0 0,8 -8,0 0,-8z M24,208l8,0 0,8 -8,0 0,-8z M32,208l8,0 0,8 -8,0 0,-8z M40,208l8,0 0,8 -8,0 0,-8z M48,208l8,0 0,8 -8,0 0,-8z M64,208l8,0 0,8 -8,0 0,-8z M72,208l8,0 0,8 -8,0 0,-8z M112,208l8,0 0,8 -8,0 0,-8z M120,208l8,0 0,8 -8,0 0,-8z M144,208l8,0 0,8 -8,0 0,-8z M160,208l8,0 0,8 -8,0 0,-8z M192,208l8,0 0,8 -8,0 0,-8z M208,208l8,0 0,8 -8,0 0,-8z M224,208l8,0 0,8 -8,0 0,-8z M232,208l8,0 0,8 -8,0 0,-8z M248,208l8,0 0,8 -8,0 0,-8z M0,216l8,0 0,8 -8,0 0,-8z M48,216l8,0 0,8 -8,0 0,-8z M72,216l8,0 0,8 -8,0 0,-8z M80,216l8,0 0,8 -8,0 0,-8z M88,216l8,0 0,8 -8,0 0,-8z M112,216l8,0 0,8 -8,0 0,-8z M152,216l8,0 0,8 -8,0 0,-8z M160,216l8,0 0,8 -8,0 0,-8z M176,216l8,0 0,8 -8,0 0,-8z M192,216l8,0 0,8 -8,0 0,-8z M224,216l8,0 0,8 -8,0 0,-8z M248,216l8,0 0,8 -8,0 0,-8z M0,224l8,0 0,8 -8,0 0,-8z M16,224l8,0 0,8 -8,0 0,-8z M24,224l8,0 0,8 -8,0 0,-8z M32,224l8,0 0,8 -8,0 0,-8z M48,224l8,0 0,8 -8,0 0,-8z M64,224l8,0 0,8 -8,0 0,-8z M72,224l8,0 0,8 -8,0 0,-8z M88,224l8,0 0,8 -8,0 0,-8z M96,224l8,0 0,8 -8,0 0,-8z M104,224l8,0 0,8 -8,0 0,-8z M112,224l8,0 0,8 -8,0 0,-8z M120,224l8,0 0,8 -8,0 0,-8z M128,224l8,0 0,8 -8,0 0,-8z M152,224l8,0 0,8 -8,0 0,-8z M176,224l8,0 0,8 -8,0 0,-8z M192,224l8,0 0,8 -8,0 0,-8z M200,224l8,0 0,8 -8,0 0,-8z M208,224l8,0 0,8 -8,0 0,-8z M216,224l8,0 0,8 -8,0 0,-8z M224,224l8,0 0,8 -8,0 0,-8z M232,224l8,0 0,8 -8,0 0,-8z M248,224l8,0 0,8 -8,0 0,-8z M0,232l8,0 0,8 -8,0 0,-8z M16,232l8,0 0,8 -8,0 0,-8z M24,232l8,0 0,8 -8,0 0,-8z M32,232l8,0 0,8 -8,0 0,-8z M48,232l8,0 0,8 -8,0 0,-8z M80,232l8,0 0,8 -8,0 0,-8z M96,232l8,0 0,8 -8,0 0,-8z M112,232l8,0 0,8 -8,0 0,-8z M136,232l8,0 0,8 -8,0 0,-8z M144,232l8,0 0,8 -8,0 0,-8z M152,232l8,0 0,8 -8,0 0,-8z M160,232l8,0 0,8 -8,0 0,-8z M184,232l8,0 0,8 -8,0 0,-8z M208,232l8,0 0,8 -8,0 0,-8z M216,232l8,0 0,8 -8,0 0,-8z M224,232l8,0 0,8 -8,0 0,-8z M240,232l8,0 0,8 -8,0 0,-8z M248,232l8,0 0,8 -8,0 0,-8z M0,240l8,0 0,8 -8,0 0,-8z M16,240l8,0 0,8 -8,0 0,-8z M24,240l8,0 0,8 -8,0 0,-8z M32,240l8,0 0,8 -8,0 0,-8z M48,240l8,0 0,8 -8,0 0,-8z M80,240l8,0 0,8 -8,0 0,-8z M96,240l8,0 0,8 -8,0 0,-8z M104,240l8,0 0,8 -8,0 0,-8z M120,240l8,0 0,8 -8,0 0,-8z M136,240l8,0 0,8 -8,0 0,-8z M144,240l8,0 0,8 -8,0 0,-8z M160,240l8,0 0,8 -8,0 0,-8z M168,240l8,0 0,8 -8,0 0,-8z M176,240l8,0 0,8 -8,0 0,-8z M200,240l8,0 0,8 -8,0 0,-8z M208,240l8,0 0,8 -8,0 0,-8z M216,240l8,0 0,8 -8,0 0,-8z M224,240l8,0 0,8 -8,0 0,-8z M0,248l8,0 0,8 -8,0 0,-8z M48,248l8,0 0,8 -8,0 0,-8z M72,248l8,0 0,8 -8,0 0,-8z M88,248l8,0 0,8 -8,0 0,-8z M120,248l8,0 0,8 -8,0 0,-8z M128,248l8,0 0,8 -8,0 0,-8z M136,248l8,0 0,8 -8,0 0,-8z M144,248l8,0 0,8 -8,0 0,-8z M168,248l8,0 0,8 -8,0 0,-8z M184,248l8,0 0,8 -8,0 0,-8z M192,248l8,0 0,8 -8,0 0,-8z M200,248l8,0 0,8 -8,0 0,-8z M0,256l8,0 0,8 -8,0 0,-8z M8,256l8,0 0,8 -8,0 0,-8z M16,256l8,0 0,8 -8,0 0,-8z M24,256l8,0 0,8 -8,0 0,-8z M32,256l8,0 0,8 -8,0 0,-8z M40,256l8,0 0,8 -8,0 0,-8z M48,256l8,0 0,8 -8,0 0,-8z M64,256l8,0 0,8 -8,0 0,-8z M72,256l8,0 0,8 -8,0 0,-8z M80,256l8,0 0,8 -8,0 0,-8z M96,256l8,0 0,8 -8,0 0,-8z M136,256l8,0 0,8 -8,0 0,-8z M144,256l8,0 0,8 -8,0 0,-8z M152,256l8,0 0,8 -8,0 0,-8z M160,256l8,0 0,8 -8,0 0,-8z M168,256l8,0 0,8 -8,0 0,-8z M176,256l8,0 0,8 -8,0 0,-8z M184,256l8,0 0,8 -8,0 0,-8z M192,256l8,0 0,8 -8,0 0,-8z M208,256l8,0 0,8 -8,0 0,-8z M232,256l8,0 0,8 -8,0 0,-8z M256,256l8,0 0,8 -8,0 0,-8z " stroke="transparent" fill="black"></path></svg></div>
+          <div class="qr-info" data-om-id="15a8480e:1018">
+            <div class="qr-icon" data-om-id="15a8480e:1019">
+              <!-- Instagram icon -->
+              <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-om-id="15a8480e:1020"><rect x="2" y="2" width="20" height="20" rx="5" ry="5" data-om-id="15a8480e:1021"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" data-om-id="15a8480e:1022"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" data-om-id="15a8480e:1023"></line></svg>
+            </div>
+            <div class="qr-platform" data-om-id="15a8480e:1024">Instagram</div>
+            <div class="qr-handle" data-om-id="15a8480e:1025">@mauriciobarfknecht</div>
+            <div class="qr-hint" data-om-id="15a8480e:1026">aponte a câmera</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer" data-om-id="15a8480e:1027">
+        <img class="footer-logo" src="assets/act-logo.png" alt="Act Tecnologia" data-om-id="15a8480e:1028">
+        <div class="ftr-right" data-om-id="15a8480e:1029">Maurício Barfknecht<span class="sep" data-om-id="15a8480e:1030">|</span>UTFPR · Act Tecnologia</div>
+      </div>
+    </div>
+  </section>
+
+</deck-stage>
+
+<script>
+  // Render QR codes after the qrcode-generator library loads
+  function renderQRs() {
+    if (typeof qrcode === 'undefined') {
+      setTimeout(renderQRs, 100);
+      return;
+    }
+    document.querySelectorAll('.qr-svg[data-qr]').forEach(el => {
+      try {
+        const qr = qrcode(0, 'M');
+        qr.addData(el.dataset.qr);
+        qr.make();
+        el.innerHTML = qr.createSvgTag({ cellSize: 8, margin: 0, scalable: true });
+      } catch (e) {
+        console.error('QR render failed', e);
+      }
+    });
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', renderQRs);
+  } else {
+    renderQRs();
+  }
+</script>
+
+
+
+</body></html>
